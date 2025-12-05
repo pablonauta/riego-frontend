@@ -1,0 +1,13 @@
+# Ignorar TODO por defecto
+*
+
+# PERMITIR SOLO archivos del deploy
+!.gitignore
+!index.html
+!404.html
+!CNAME
+!favicon.ico
+!*.js
+!*.css
+!assets/
+!assets/**
