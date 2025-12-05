@@ -1,0 +1,25 @@
+<div class="dashboard-container">
+  <h1>Panel del sistema de riego</h1>
+
+  <p *ngIf="nombreUsuario">
+    Hola, <strong>{{ nombreUsuario }}</strong>.
+  </p>
+
+  <p *ngIf="email">
+    Iniciaste sesión con: <strong>{{ email }}</strong>
+  </p>
+
+  <p class="intro">
+    Bienvenido al panel general del sistema de riego.
+  </p>
+
+  <div class="placeholder">
+    <h2>Próximamente</h2>
+    <ul>
+      <li>Humedad del suelo en tiempo real.</li>
+      <li>Historial de riegos.</li>
+      <li>Control remoto del riego.</li>
+      <li>Programación automática.</li>
+    </ul>
+  </div>
+</div>

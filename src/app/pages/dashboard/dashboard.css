@@ -1,0 +1,19 @@
+.dashboard-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.intro {
+  margin-top: 0.5rem;
+}
+
+.placeholder {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f4f6fb;
+  border-radius: 6px;
+}
