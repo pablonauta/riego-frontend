@@ -1,0 +1,15 @@
+.error {
+  margin-top: 12px;
+  color: red;
+  font-weight: bold;
+}
+.alerta-error {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  background-color: #ffe0e0;
+  border: 1px solid #cc0000;
+  color: #800000;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+}

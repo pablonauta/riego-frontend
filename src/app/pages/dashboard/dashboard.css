@@ -1,19 +1,40 @@
 .dashboard-container {
-  max-width: 900px;
+  max-width: 750px;
   margin: 2rem auto;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-.intro {
-  margin-top: 0.5rem;
-}
-
-.placeholder {
-  margin-top: 1.5rem;
   padding: 1rem;
-  background: #f4f6fb;
-  border-radius: 6px;
+}
+
+/* HEADER */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid var(--color-primary-light);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  color: var(--color-primary-dark);
+}
+
+/* SECCIÓN PLACEHOLDER */
+.placeholder {
+  margin-top: 2rem;
+  padding: 1.2rem;
+  background: white;
+  border: 1px solid var(--color-primary-light);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.placeholder h2 {
+  margin-top: 0;
+  color: var(--color-primary);
+}
+
+.placeholder p {
+  margin: 0.5rem 0 0;
+  color: var(--color-text);
 }

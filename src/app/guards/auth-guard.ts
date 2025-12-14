@@ -1,5 +1,5 @@
 // src/app/guards/auth-guard.ts
-import { Injectable } from '@angular/core';
+import { Injectable, computed } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
@@ -13,6 +13,11 @@ import { AuthService } from '../services/auth.service';
 })
 export class AuthGuard implements CanActivate {
 
+  // ✅ Computed reactivo basado en signal del AuthService
+  private isAuthenticated = computed(() => {
+    return !!this.authService.getToken();
+  });
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -23,16 +28,15 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
 
-    const token = this.authService.getToken();
-    const user  = this.authService.getUsuarioActual();
-
-    // Sin token → al login
-    if (!token) {
+    // ✅ Sin autenticación → login
+    if (!this.isAuthenticated()) {
       this.router.navigate(['/login']);
       return false;
     }
 
-    // Más adelante, si querés usar emailVerificado:
+    const user = this.authService.getUsuarioActual();
+
+    // ✅ Si el usuario existe pero no verificó email
     if (user && user.emailVerificado === false) {
       this.router.navigate(['/verificacion-pendiente']);
       return false;

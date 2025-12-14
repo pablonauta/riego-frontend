@@ -1,70 +1,52 @@
-// src/app/services/auth.service.ts
-
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
-import { environment } from '../environments/environment';
-import { LoginRequest, AuthResponse } from '../models/auth.models';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { environment } from '../../environments/environment'; // <-- tu ruta que ya te funcionó
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private http = inject(HttpClient);
+  // Si apiUrl está vacío (dev): usa proxy con /api
+  // Si apiUrl tiene dominio (prod): pega directo al backend
+  private apiBase = environment.apiUrl
+    ? `${environment.apiUrl}/api`
+    : '/api';
 
-  private apiUrl = environment.apiUrl;
+  constructor(private http: HttpClient, private router: Router) {}
 
-  private readonly TOKEN_KEY = 'token';
-  private readonly USER_KEY  = 'usuario';
-
-  constructor() {}
-
-  // ============================
-  // LOGIN
-  // ============================
-  login(data: LoginRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.apiUrl}/auth/login`, data)
-      .pipe(
-        tap((resp) => {
-          this.guardarSesion(resp);
-        })
-      );
+  login(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiBase}/auth/login`, payload);
   }
 
-  guardarSesion(resp: AuthResponse): void {
-    // Guardar token siempre
-    localStorage.setItem(this.TOKEN_KEY, resp.token);
-
-    // Armar un objeto usuario resumido con lo que venga
-    const usuario = {
-      nombre:          resp.nombre ?? null,
-      email:           resp.email ?? null,
-      emailVerificado: resp.emailVerificado ?? null
-    };
-
-    localStorage.setItem(this.USER_KEY, JSON.stringify(usuario));
+  register(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiBase}/auth/register`, payload);
   }
 
-  // ============================
-  // TOKEN
-  // ============================
+  solicitarRecuperacion(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiBase}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(payload: { token: string; password: string; password_confirmation: string; }): Observable<any> {
+    return this.http.post<any>(`${this.apiBase}/auth/reset-password`, payload);
+  }
+
+  // ---------- MANEJO DE SESIÓN (LOCALSTORAGE) ----------
+
+  guardarSesion(token: string, usuario: any): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+  }
+
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return localStorage.getItem('token');
   }
 
-  estaLogueado(): boolean {
-    return !!this.getToken();
-  }
-
-  // ============================
-  // USUARIO
-  // ============================
-  getUsuarioActual(): { nombre: string | null; email: string | null; emailVerificado: boolean | null } | null {
-    const raw = localStorage.getItem(this.USER_KEY);
-    if (!raw) return null;
-
+  getUsuarioActual(): any | null {
+    const raw = localStorage.getItem('usuario');
+    if (!raw) {
+      return null;
+    }
     try {
       return JSON.parse(raw);
     } catch {
@@ -73,7 +55,14 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    this.router.navigate(['/login']);
+  }
+
+  // ---------- HELPERS ÚTILES ----------
+
+  estaAutenticado(): boolean {
+    return !!this.getToken();
   }
 }

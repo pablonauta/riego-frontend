@@ -1,4 +1,0 @@
-export const environment = {
-  production: true,
-  apiUrl: 'https://api.tecnografic.com.uy/api'
-};

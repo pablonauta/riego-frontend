@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://api.tecnografic.com.uy",
+    "changeOrigin": true,
+    "secure": true,
+    "logLevel": "debug"
+  }
+}

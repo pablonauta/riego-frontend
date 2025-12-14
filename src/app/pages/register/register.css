@@ -1,0 +1,139 @@
+/* CONTENEDOR PRINCIPAL DEL FORMULARIO */
+.register-wrapper {
+  max-width: 380px;
+  margin: 2rem auto;
+  padding: 2rem 2rem;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* TÍTULO */
+h1 {
+  text-align: center;
+  margin-bottom: 0.75rem;
+  color: var(--color-primary-dark);
+}
+
+/* TEXTO DE EXPLICACIÓN */
+.explain {
+  margin-bottom: 1.2rem;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+/* ALERTAS */
+.alert {
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.alert-success {
+  background: #e6f7e7;
+  border: 1px solid var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.alert-error {
+  background: #ffd7d7;
+  border: 1px solid #ff8c8c;
+  color: #7a0000;
+}
+
+/* FORMULARIO CON ESPACIO PAREJO ENTRE FILAS */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* COLUMNA DE CADA CAMPO */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 280px;     /* ancho controlado */
+  margin: 0 auto;       /* centra el bloque */
+}
+
+/* LABELS */
+.form-field label {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: var(--color-text);
+}
+
+/* INPUTS */
+.form-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--color-primary-light);
+  background-color: var(--color-surface);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.form-field input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.25);
+}
+
+/* BOTÓN */
+button {
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 280px;     /* coincide con inputs */
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: var(--color-text-light);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* LINK INFERIOR */
+.register-links {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.register-links a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-links a:hover {
+  text-decoration: underline;
+}
+
+/* cuando Angular marca inválido + tocado → borde rojo */
+input.ng-invalid.ng-touched {
+  border-color: #ff5555;
+}
+
+/* texto chiquito de error debajo del campo */
+.field-error {
+  color: #b00020;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}

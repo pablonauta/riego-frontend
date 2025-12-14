@@ -1,0 +1,25 @@
+<div class="login-wrapper">
+  <h1>Login</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <label>Email</label>
+    <input type="email" formControlName="email">
+
+    <label>Password</label>
+    <input type="password" formControlName="password">
+
+    <!-- ✅ ERROR CON SIGNAL -->
+    <div
+      *ngIf="errorMessage()"
+      style="margin-top: 10px; color: red; font-weight: bold;"
+    >
+      ⚠️ {{ errorMessage() }}
+    </div>
+
+    <button type="submit">
+      Entrar
+    </button>
+
+  </form>
+</div>

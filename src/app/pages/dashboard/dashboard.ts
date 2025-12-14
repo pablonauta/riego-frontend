@@ -1,12 +1,18 @@
 // src/app/pages/dashboard/dashboard.ts
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+
+// Componente de logout
+import { LogoutComponent } from '../../components/logout/logout';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    LogoutComponent
+  ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
@@ -14,15 +20,10 @@ export class Dashboard {
 
   private authService = inject(AuthService);
 
-  nombreUsuario: string | null = null;
-  email: string | null = null;
-  emailVerificado: boolean | null = null;
+  // ✅ Signals derivados del AuthService
+  usuario = computed(() => this.authService.getUsuarioActual());
 
-  constructor() {
-    const user = this.authService.getUsuarioActual();
-
-    this.nombreUsuario   = user?.nombre ?? null;
-    this.email           = user?.email ?? null;
-    this.emailVerificado = user?.emailVerificado ?? null;
-  }
+  nombreUsuario = computed(() => this.usuario()?.nombre ?? null);
+  email = computed(() => this.usuario()?.email ?? null);
+  emailVerificado = computed(() => this.usuario()?.emailVerificado ?? null);
 }

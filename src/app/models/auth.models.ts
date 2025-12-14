@@ -16,7 +16,10 @@ export interface LoginRequest {
  */
 export interface AuthResponse {
   token: string;
-  nombre?: string;
-  email?: string;
-  emailVerificado?: boolean;
+  nombre: string;
+  email: string;
+  emailVerificado: boolean;
+  message: string;   // el mensaje precioso 😄
+  // lo que más tengas: rol, etc.
 }
+
