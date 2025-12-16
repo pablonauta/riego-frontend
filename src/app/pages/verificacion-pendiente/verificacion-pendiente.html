@@ -1,0 +1,23 @@
+<div class="verify-wrapper">
+  <div class="card">
+    <h1>Verificación pendiente</h1>
+
+    <p>Debes verificar tu email antes de iniciar sesión.</p>
+
+    <input
+      type="email"
+      placeholder="Tu email"
+      [value]="email()"
+      (input)="email.set($any($event.target).value)"
+    />
+
+    <button (click)="reenviarEmail()" [disabled]="loading()">
+      {{ loading() ? 'Enviando…' : 'Reenviar email de verificación' }}
+    </button>
+
+    <p class="ok" *ngIf="mensaje()">{{ mensaje() }}</p>
+    <p class="err" *ngIf="error()">{{ error() }}</p>
+
+    <a routerLink="/login">Volver al login</a>
+  </div>
+</div>

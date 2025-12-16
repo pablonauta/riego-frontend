@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -16,11 +16,9 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   form: FormGroup;
-
-  // ESTADO MODERNO CON SIGNALS
   errorMessage = signal<string | null>(null);
 
   constructor(
@@ -34,8 +32,14 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit(): void {
+    // ✅ Si ya hay token, no tiene sentido mostrar login
+    if (this.authService.estaAutenticado()) {
+      this.router.navigate(['/dashboard'], { replaceUrl: true });
+    }
+  }
+
   onSubmit(): void {
-    console.log('SUBMIT LOGIN (RIEGO + SIGNALS)');
     this.errorMessage.set(null);
 
     if (this.form.invalid) {
@@ -44,19 +48,43 @@ export class LoginComponent {
       return;
     }
 
-    const payload = this.form.value;
+    const payload = {
+  email: (this.form.value.email ?? '').trim(),
+  password: this.form.value.password ?? ''
+};
 
     this.authService.login(payload).subscribe({
-      next: (resp) => {
-        console.log('LOGIN OK', resp);
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        console.log('ENTRÉ AL ERROR DEL LOGIN (RIEGO)', err);
+  next: (resp) => {
+    console.log('LOGIN OK', resp);
 
-        // ✅ MENSAJE FIJO CON SIGNAL
-        this.errorMessage.set('Usuario o contraseña incorrectos');
-      }
-    });
+    this.authService.guardarSesion(resp.token, null);
+
+    this.router.navigate(['/dashboard'], { replaceUrl: true });
+  },
+  error: (err) => {
+    console.log('ENTRÉ AL ERROR DEL LOGIN (RIEGO)', err);
+
+    if (err.status === 403 && err?.error?.code === 'EMAIL_NOT_VERIFIED') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+
+      localStorage.setItem('email-pendiente', payload.email);
+
+      this.router.navigate(['/verificacion-pendiente'], { replaceUrl: true });
+      return;
+    }
+
+    // (opcional, pero recomendable)
+    if (err.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+    }
+
+    this.errorMessage.set(
+      err?.error?.message ?? 'Usuario o contraseña incorrectos'
+    );
+  }
+});
+
   }
 }

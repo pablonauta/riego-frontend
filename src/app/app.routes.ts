@@ -22,6 +22,9 @@ import { Dashboard } from './pages/dashboard/dashboard';
 // Guard
 import { AuthGuard } from './guards/auth-guard';
 
+import { VerificacionPendienteComponent } from './pages/verificacion-pendiente/verificacion-pendiente';
+
+
 export const routes: Routes = [
 
   {
@@ -50,7 +53,13 @@ export const routes: Routes = [
     path: 'reset-password',
     component: ResetPasswordComponent
   },
-
+  
+ 
+  {
+  path: 'verificacion-pendiente',
+  component: VerificacionPendienteComponent
+  },
+   
   {
     path: 'dashboard',
     component: Dashboard,
