@@ -62,7 +62,6 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/dashboard'], { replaceUrl: true });
   },
   error: (err) => {
-    console.log('ENTRÉ AL ERROR DEL LOGIN (RIEGO)', err);
 
     if (err.status === 403 && err?.error?.code === 'EMAIL_NOT_VERIFIED') {
       localStorage.removeItem('token');

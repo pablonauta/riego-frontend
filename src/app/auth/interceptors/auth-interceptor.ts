@@ -13,6 +13,18 @@ export const authInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ): any => {
 
+   const publicPaths = [
+    '/auth/login',
+    '/auth/register',
+    '/auth/forgot-password',
+    '/auth/reset-password',
+    '/auth/resend-verification'
+  ];
+
+  if (publicPaths.some(p => req.url.includes(p))) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const token = authService.getToken();
 
