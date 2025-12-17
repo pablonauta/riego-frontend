@@ -1,0 +1,20 @@
+<h2>Bombas</h2>
+
+<p *ngIf="loading()">Cargando...</p>
+
+<p *ngIf="!loading() && error() as err" class="error">
+  {{ err }}
+</p>
+
+<p *ngIf="!loading() && !error() && bombas().length === 0">
+  No hay bombas registradas para esta instalación.
+</p>
+
+<div *ngIf="!loading() && !error() && bombas().length > 0">
+  <app-bomba-toggle
+  *ngFor="let b of bombas()"
+  [bomba]="b"
+  [instalacionId]="instalacionId"
+  (cambio)="cargarBombas()"
+></app-bomba-toggle>
+</div>

@@ -1,0 +1,13 @@
+h2 {
+  margin-bottom: 16px;
+}
+
+.bombas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.error {
+  color: #b00020;
+}

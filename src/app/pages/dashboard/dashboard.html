@@ -1,13 +1,11 @@
-
 <div class="dashboard-container">
 
-  <!-- HEADER con título + botón de logout -->
+  <!-- HEADER -->
   <div class="dashboard-header">
     <h1>Panel del sistema de riego</h1>
     <app-logout></app-logout>
   </div>
 
-  <!-- SALUDO -->
   <p *ngIf="nombreUsuario() as nombre">
     Hola, <strong>{{ nombre }}</strong>.
   </p>
@@ -16,19 +14,7 @@
     Iniciaste sesión con: <strong>{{ mail }}</strong>
   </p>
 
-  <p class="intro">
-    Bienvenido al panel general del sistema de riego.
-  </p>
+  <!-- ✅ ACÁ se renderizan las rutas hijas -->
+  <router-outlet></router-outlet>
 
-  <!-- SECCIÓN PLACEHOLDER -->
-  <div class="placeholder">
-    <h2>Próximamente</h2>
-    <ul>
-      <li>Humedad del suelo en tiempo real.</li>
-      <li>Historial de riegos.</li>
-      <li>Control remoto del riego.</li>
-      <li>Programación automática.</li>
-      <li>Temperatura de la cerveza.</li>
-    </ul>
-  </div>
 </div>

@@ -1,0 +1,107 @@
+.bomba-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  max-width: 420px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.bomba-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bomba-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* ===== Estado ON / OFF ===== */
+.estado {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 14px;
+  border: 1px solid transparent;
+}
+
+.estado.on {
+  background-color: #e6f7ee;
+  color: #0a6b2e;
+  border-color: #b6e7c8;
+}
+
+.estado.off {
+  background-color: #fdecec;
+  color: #8a1a1a;
+  border-color: #f3b8b8;
+}
+
+/* ===== Info ===== */
+.bomba-info {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* ===== Acciones ===== */
+.bomba-actions {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== Botón principal ===== */
+.btn {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Encender (verde) */
+.btn-on {
+  background-color: #1b8f4d;
+  color: white;
+}
+
+.btn-on:hover {
+  background-color: #15753f;
+}
+
+/* Apagar (rojo) */
+.btn-off {
+  background-color: #c0392b;
+  color: white;
+}
+
+.btn-off:hover {
+  background-color: #a93226;
+}
+
+/* Deshabilitado */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Textos auxiliares ===== */
+.hint {
+  font-size: 13px;
+  color: #777;
+}
+
+.error {
+  font-size: 13px;
+  color: #b00020;
+}

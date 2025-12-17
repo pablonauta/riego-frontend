@@ -1,0 +1,42 @@
+<div class="bomba-card">
+
+  <div class="bomba-header">
+    <h3>{{ bomba.nombre }}</h3>
+
+    <span
+      class="estado"
+      [class.on]="bomba.encendida"
+      [class.off]="!bomba.encendida">
+      {{ bomba.encendida ? 'ON' : 'OFF' }}
+    </span>
+  </div>
+
+  <div class="bomba-info">
+    <span>Pin: <b>{{ bomba.pin }}</b></span>
+    <span>Modo: <b>{{ bomba.modo }}</b></span>
+  </div>
+
+  <div class="bomba-actions">
+    <button
+      class="btn"
+      [class.btn-on]="!bomba.encendida"
+      [class.btn-off]="bomba.encendida"
+      (click)="toggle()"
+      [disabled]="loading() || !bomba.habilitada">
+      {{ bomba.encendida ? 'Apagar' : 'Encender' }}
+    </button>
+
+    <span class="hint" *ngIf="!bomba.habilitada">
+      Bomba deshabilitada
+    </span>
+
+    <span class="hint" *ngIf="loading()">
+      Procesando...
+    </span>
+
+    <span class="error" *ngIf="error()">
+      {{ error() }}
+    </span>
+  </div>
+
+</div>

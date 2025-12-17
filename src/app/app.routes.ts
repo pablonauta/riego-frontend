@@ -24,6 +24,10 @@ import { AuthGuard } from './guards/auth-guard';
 
 import { VerificacionPendienteComponent } from './pages/verificacion-pendiente/verificacion-pendiente';
 
+import { BombasPage } from './pages/bombas/bombas';
+
+import { DashboardHome } from './pages/dashboard-home';
+
 
 export const routes: Routes = [
 
@@ -61,10 +65,14 @@ export const routes: Routes = [
   },
    
   {
-    path: 'dashboard',
-    component: Dashboard,
-    canActivate: [AuthGuard]
-  },
+  path: 'dashboard',
+  component: Dashboard,
+  canActivate: [AuthGuard],
+  children: [
+    { path: '', component: DashboardHome },   // ✅ home del dashboard
+    { path: 'bombas', component: BombasPage } // ✅ bombas
+  ]
+},
 
   {
     path: '**',

@@ -1,26 +1,25 @@
 // src/app/pages/dashboard/dashboard.ts
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-
-// Componente de logout
 import { LogoutComponent } from '../../components/logout/logout';
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    RouterOutlet,
     LogoutComponent
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
 export class Dashboard {
-
   private authService = inject(AuthService);
 
-  // ✅ Signals derivados del AuthService
   usuario = computed(() => this.authService.getUsuarioActual());
 
   nombreUsuario = computed(() => this.usuario()?.nombre ?? null);
