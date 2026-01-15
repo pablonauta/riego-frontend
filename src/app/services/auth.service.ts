@@ -80,7 +80,15 @@ export class AuthService {
   this.router.navigate(['/login'], { replaceUrl: true });
 }
 
-  estaAutenticado(): boolean {
-    return !!this.getToken();
-  }
+ estaAutenticado(): boolean {
+  return !!localStorage.getItem('token');
+}
+
+ me() {
+  return this.http.get<{
+    name: string;
+    principalClass: string;
+    authorities: string[];
+  }>('/api/auth/me');
+}
 }

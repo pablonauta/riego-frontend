@@ -6,13 +6,13 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -33,11 +33,29 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // ✅ Si ya hay token, no tiene sentido mostrar login
-    if (this.authService.estaAutenticado()) {
+  // si no hay token, que se vea el login normal
+  if (!this.authService.estaAutenticado()) return;
+
+  // hay token: lo validamos consultando al backend
+  this.authService.me().subscribe({
+    next: (me) => {
+      console.log('Sesion valida:', me);
+
+      // opcional: guardar usuario (lo mejor)
+      localStorage.setItem('usuario', JSON.stringify(me));
+
       this.router.navigate(['/dashboard'], { replaceUrl: true });
+    },
+    error: (err) => {
+      console.warn('Token invalido o vencido, limpiando sesion', err);
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      // y nos quedamos en login
     }
-  }
+  });
+}
+
 
   onSubmit(): void {
     this.errorMessage.set(null);

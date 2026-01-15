@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import {
-  HttpEvent,
   HttpHandlerFn,
   HttpInterceptorFn,
   HttpRequest
@@ -11,34 +10,33 @@ import { AuthService } from '../../services/auth.service';
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
-): any => {
+) => {
 
-   const publicPaths = [
-    '/auth/login',
-    '/auth/register',
-    '/auth/forgot-password',
-    '/auth/reset-password',
-    '/auth/resend-verification'
+  const publicPaths = [
+    '/api/auth/login',
+    '/api/auth/register',
+    '/api/auth/forgot-password',
+    '/api/auth/reset-password',
+    '/api/auth/resend-verification',
+    '/api/auth/verify-email'
   ];
 
-  if (publicPaths.some(p => req.url.includes(p))) {
+  const urlPath = req.url.startsWith('http')
+    ? new URL(req.url).pathname
+    : req.url;
+
+  if (publicPaths.some(p => urlPath.startsWith(p))) {
     return next(req);
   }
 
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  // Si no hay token, sigue sin tocar nada
   if (!token) {
     return next(req);
   }
 
-  // Clonamos la request y agregamos Authorization
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-
-  return next(authReq);
+  return next(req.clone({
+    setHeaders: { Authorization: `Bearer ${token}` }
+  }));
 };

@@ -1,12 +1,17 @@
 /* CONTENEDOR PRINCIPAL DEL FORMULARIO */
-.register-wrapper {
-  max-width: 380px;
-  margin: 2rem auto;
-  padding: 2rem 2rem;
-  border-radius: 10px;
-  background: white;
-  border: 1px solid var(--color-primary-light);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.login-wrapper,
+.register-wrapper,
+.reset-wrapper,
+.forgot-wrapper,
+.dashboard-container {
+  width: min(520px, calc(100% - 24px)); /* 👈 clave: no ocupa todo y respeta padding */
+  margin: clamp(16px, 4vh, 64px) auto;  /* 👈 margen responsive */
+  background-color: var(--blanco);
+  padding: clamp(18px, 3.5vw, 32px);   /* 👈 padding responsive */
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--verde-claro);
+  animation: aparecer 0.3s ease-out;
 }
 
 /* TÍTULO */

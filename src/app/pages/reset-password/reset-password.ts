@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 import {
   FormBuilder,
   FormGroup,
@@ -58,11 +59,17 @@ export class ResetPasswordComponent {
       return;
     }
 
-    const { password, password_confirmation } = this.form.value;
+    const password = (this.form.get('password')?.value ?? '') as string;
+    const password_confirmation = (this.form.get('password_confirmation')?.value ?? '') as string;
 
     if (password !== password_confirmation) {
       this.errorMessage.set('Las contraseñas no coinciden.');
       this.successMessage.set(null);
+
+      this.form.get('password')?.setErrors({ mismatch: true });
+      this.form.get('password_confirmation')?.setErrors({ mismatch: true });
+      this.form.get('password')?.markAsTouched();
+      this.form.get('password_confirmation')?.markAsTouched();
       return;
     }
 
@@ -76,24 +83,19 @@ export class ResetPasswordComponent {
       password_confirmation
     };
 
-    this.authService.resetPassword(payload).subscribe({
-      next: (resp) => {
-        this.loading.set(false);
-        this.successMessage.set(
-          resp?.message || 'Contraseña restablecida correctamente. Ahora podés iniciar sesión.'
-        );
-        this.form.reset();
-
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.errorMessage.set(
-          err?.error?.message || 'No se pudo restablecer la contraseña.'
-        );
-      }
-    });
+    this.authService.resetPassword(payload)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (resp) => {
+          this.successMessage.set(
+            resp?.message || 'Contraseña restablecida correctamente. Ahora podés iniciar sesión.'
+          );
+          this.form.reset();
+          setTimeout(() => this.router.navigateByUrl('/login'), 2000);
+        },
+        error: (err) => {
+          this.errorMessage.set(err?.error?.message || 'No se pudo restablecer la contraseña.');
+        }
+      });
   }
 }

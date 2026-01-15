@@ -1,7 +1,7 @@
 // src/app/pages/register/register.ts
 
 import { Component, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -30,7 +30,8 @@ export class RegisterComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
@@ -83,11 +84,19 @@ export class RegisterComponent {
       )
       .subscribe({
         next: (resp) => {
-          console.log('Registro OK:', resp);
-          this.messageSuccess.set(
-            resp?.message || 'Registro exitoso. Revisá tu correo.'
-          );
-          this.form.reset();
+                 console.log('Registro OK:', resp);
+
+                // agarrar el email ANTES de resetear
+                const email = (this.form.get('email')?.value || '').trim();
+
+                // guardarlo para la pantalla de verificación
+                localStorage.setItem('pendingVerificationEmail', email);
+
+                // opcional: limpiar el form
+                this.form.reset();
+
+  // navegar a tu pantalla existente
+  this.router.navigateByUrl('/verificacion-pendiente');
         },
         error: (err) => {
           console.error('Error en registro:', err);
