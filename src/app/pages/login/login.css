@@ -84,3 +84,48 @@ button[type="submit"]{
 button[type="submit"]:hover{
   filter: brightness(0.95);
 }
+
+.links{
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(47, 143, 58, 0.25);
+
+  display: grid;
+  gap: 10px;
+}
+
+.links a{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 10px 12px;
+  border: 1px solid rgba(47, 143, 58, 0.30);
+  border-radius: 10px;
+
+  background: #f7fff7;
+  color: #1b5e20;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.links a::after{
+  content: "›";
+  font-size: 18px;
+  opacity: 0.75;
+}
+
+.links a:hover{
+  background: #ecffec;
+  border-color: rgba(47, 143, 58, 0.55);
+}
+
+.links a:active{
+  transform: scale(0.98);
+}
+
+/* Si querés que el de "Olvidé mi contraseña" destaque */
+.links a:nth-child(3){
+  font-weight: 600;
+}
