@@ -1,5 +1,7 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+
 import {
   FormBuilder,
   FormGroup,
@@ -20,11 +22,13 @@ export class LoginComponent implements OnInit {
 
   form: FormGroup;
   errorMessage = signal<string | null>(null);
+  successMessage = signal<string | null>(null);
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -33,6 +37,15 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+  //  mensaje si venimos del link de verificación
+  const verified = this.route.snapshot.queryParamMap.get('verified');
+  if (verified === '1') {
+    this.successMessage.set('Email verificado. Ya podés iniciar sesión.');
+  } else if (verified === '0') {
+    this.errorMessage.set('No se pudo verificar el email. El enlace puede estar vencido.');
+  }
+
   // si no hay token, que se vea el login normal
   if (!this.authService.estaAutenticado()) return;
 
@@ -41,7 +54,6 @@ export class LoginComponent implements OnInit {
     next: (me) => {
       console.log('Sesion valida:', me);
 
-      // opcional: guardar usuario (lo mejor)
       localStorage.setItem('usuario', JSON.stringify(me));
 
       this.router.navigate(['/dashboard'], { replaceUrl: true });
@@ -55,6 +67,7 @@ export class LoginComponent implements OnInit {
     }
   });
 }
+
 
 
   onSubmit(): void {

@@ -27,6 +27,9 @@
           required
         />
       </div>
+      <div *ngIf="successMessage()" class="mensaje-exito">
+         {{ successMessage() }}
+      </div>
 
       <div *ngIf="errorMessage()" class="alerta-error">
         {{ errorMessage() }}

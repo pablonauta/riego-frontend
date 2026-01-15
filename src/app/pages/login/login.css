@@ -10,6 +10,17 @@
   text-align: center;
 }
 
+.mensaje-exito{
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: #e6ffe6;
+  border: 1px solid rgba(0, 140, 0, 0.35);
+  color: #0a5a0a;
+  font-weight: 700;
+  text-align: center;
+}
+
 /* Layout página */
 .page{
   min-height: 100vh;
