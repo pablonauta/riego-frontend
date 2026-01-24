@@ -2,6 +2,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { UltimaFotoComponent } from '../../components/ultima-foto/ultima-foto';
 import { AuthService } from '../../services/auth.service';
 import { LogoutComponent } from '../../components/logout/logout';
 
@@ -12,7 +13,8 @@ import { LogoutComponent } from '../../components/logout/logout';
   imports: [
     CommonModule,
     RouterOutlet,
-    LogoutComponent
+    LogoutComponent,
+    UltimaFotoComponent
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']

@@ -1,0 +1,17 @@
+.foto-card {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.error {
+  color: #f55;
+}
