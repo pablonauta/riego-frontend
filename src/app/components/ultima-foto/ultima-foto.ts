@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { finalize, switchMap } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
+import { environment } from '../../../environments/environment'; // ajustá ruta si cambia
 
 export interface LuzFoto {
   id: number;
@@ -10,7 +11,7 @@ export interface LuzFoto {
   ts: string;
   tipo: string;
   sizeBytes: number;
-  url: string;
+  url: string; // "/api/luz/fotos/123"
 }
 
 @Component({
@@ -27,11 +28,16 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
   @Input() refreshMs = 0;
 
   foto = signal<LuzFoto | null>(null);
+  imgSrc = signal<string | null>(null);
+
   cargando = signal(false);
   error = signal<string | null>(null);
 
   private sub?: Subscription;
   private timer?: any;
+
+  private lastObjectUrl: string | null = null;
+  private apiUrl = environment.apiUrl; // ej: "https://api.tecnografic.com.uy"
 
   constructor(private http: HttpClient) {}
 
@@ -46,6 +52,8 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
     if (this.timer) clearInterval(this.timer);
+
+    if (this.lastObjectUrl) URL.revokeObjectURL(this.lastObjectUrl);
   }
 
   cargar(): void {
@@ -61,13 +69,30 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
 
     this.sub = this.http
-      .get<LuzFoto>('/api/luz/fotos/ultima', { params })
-      .pipe(finalize(() => this.cargando.set(false)))
+      .get<LuzFoto>('/api/luz/fotos/ultima', { params }) // proxy o baseUrl, como ya lo tenías
+      .pipe(
+        switchMap((resp) => {
+          this.foto.set(resp);
+
+          // bajar imagen REAL como blob (privada) usando la url del DTO
+          // OJO: resp.url viene tipo "/api/luz/fotos/123"
+          return this.http.get(`${this.apiUrl}${resp.url}`, { responseType: 'blob' });
+        }),
+        finalize(() => this.cargando.set(false))
+      )
       .subscribe({
-        next: (resp) => this.foto.set(resp),
+        next: (blob) => {
+          // liberar anterior (importante si refrescás)
+          if (this.lastObjectUrl) URL.revokeObjectURL(this.lastObjectUrl);
+
+          const objUrl = URL.createObjectURL(blob);
+          this.lastObjectUrl = objUrl;
+          this.imgSrc.set(objUrl);
+        },
         error: () => {
           this.error.set('No se pudo cargar la imagen');
           this.foto.set(null);
+          this.imgSrc.set(null);
         }
       });
   }
