@@ -2,8 +2,8 @@ import { Component, Input, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { finalize, switchMap } from 'rxjs/operators';
-import { Subscription, of } from 'rxjs';
-import { environment } from '../../../environments/environment'; // ajustá ruta si cambia
+import { Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface LuzFoto {
   id: number;
@@ -69,20 +69,18 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
 
     this.sub = this.http
-      .get<LuzFoto>('/api/luz/fotos/ultima', { params }) // proxy o baseUrl, como ya lo tenías
+      .get<LuzFoto>(`${this.apiUrl}/api/luz/fotos/ultima`, { params })
       .pipe(
         switchMap((resp) => {
           this.foto.set(resp);
 
-          // bajar imagen REAL como blob (privada) usando la url del DTO
-          // OJO: resp.url viene tipo "/api/luz/fotos/123"
+          // ✅ resp.url ya viene con "/api/..."
           return this.http.get(`${this.apiUrl}${resp.url}`, { responseType: 'blob' });
         }),
         finalize(() => this.cargando.set(false))
       )
       .subscribe({
         next: (blob) => {
-          // liberar anterior (importante si refrescás)
           if (this.lastObjectUrl) URL.revokeObjectURL(this.lastObjectUrl);
 
           const objUrl = URL.createObjectURL(blob);
