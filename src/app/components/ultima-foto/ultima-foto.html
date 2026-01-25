@@ -1,16 +1,6 @@
-<div class="foto-card">
-  <h3>Última imagen</h3>
+<div class="wrap">
+  <div *ngIf="cargando()">Cargando...</div>
+  <div class="error" *ngIf="error()">{{ error() }}</div>
 
-  <p *ngIf="cargando()">Cargando…</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
-
-  <img
-    *ngIf="foto() as f"
-    [src]="f.url"
-    alt="Última captura"
-  />
-
-  <small *ngIf="foto() as f">
-    {{ f.ts | date:'short' }}
-  </small>
+  <img *ngIf="imgSrc()" [src]="imgSrc()!" alt="Última foto" />
 </div>
