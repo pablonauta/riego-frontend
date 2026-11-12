@@ -38,7 +38,7 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
 
   private lastObjectUrl: string | null = null;
   private apiUrl = environment.apiUrl; // ej: "https://api.tecnografic.com.uy"
-  private backendUrl = environment.apiUrl.replace(/\/api$/, ''); 
+  private backendUrl = environment.apiUrl.replace(/\/api$/, '');
 
   constructor(private http: HttpClient) {}
 
@@ -75,8 +75,11 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
         switchMap((resp) => {
           this.foto.set(resp);
 
-          // resp.url ya contiene "/api"
-          return this.http.get(`${this.backendUrl}${resp.url}`, { responseType: 'blob' });
+// La URL recibida ya incluye "/api".
+return this.http.get(
+  `${this.backendUrl}${resp.url}`,
+  { responseType: 'blob' }
+);
         }),
         finalize(() => this.cargando.set(false))
       )

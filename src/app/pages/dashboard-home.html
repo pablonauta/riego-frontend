@@ -1,4 +1,6 @@
+
 <div class="placeholder">
+
   <h2>Próximamente</h2>
 
   <ul>
@@ -10,9 +12,38 @@
   </ul>
 
   <div class="dashboard-grid">
-    <div class="card" routerLink="/dashboard/bombas" style="cursor:pointer">
+    <div
+      class="card"
+      routerLink="/dashboard/bombas"
+      style="cursor: pointer">
+
       <h3>Bombas</h3>
       <p>Control y estado de las bombas de riego</p>
+
     </div>
   </div>
+
+  <!-- MONITOREO POR CAMARAS -->
+  <section class="camaras-section">
+
+    <h2>Monitoreo por cámaras</h2>
+
+    <div class="camaras-grid">
+
+      <app-ultima-foto
+        [instalacionId]="1"
+        tipo="HISTORICO"
+        [refreshMs]="30000">
+      </app-ultima-foto>
+
+      <app-ultima-foto
+        [instalacionId]="1"
+        tipo="JIELI"
+        [refreshMs]="30000">
+      </app-ultima-foto>
+
+    </div>
+
+  </section>
+
 </div>

@@ -1,6 +1,28 @@
 <div class="wrap">
-  <div *ngIf="cargando()">Cargando...</div>
-  <div class="error" *ngIf="error()">{{ error() }}</div>
 
-  <img *ngIf="imgSrc()" [src]="imgSrc()!" alt="Última foto" />
+  <h3>
+    {{ tipo === 'JIELI' ? 'Cámara Jieli' : 'Cámara Pixart' }}
+  </h3>
+
+  <div *ngIf="cargando() && !imgSrc()">
+    Cargando fotografía...
+  </div>
+
+  <div class="error" *ngIf="error()">
+    {{ error() }}
+  </div>
+
+  <img
+    *ngIf="imgSrc()"
+    [src]="imgSrc()!"
+    [alt]="'Fotografía de ' + tipo"
+  />
+
+  <div *ngIf="foto()" class="fecha-foto">
+    Última captura:
+    <strong>
+      {{ foto()!.ts | date:'dd/MM/yyyy HH:mm:ss' }}
+    </strong>
+  </div>
+
 </div>

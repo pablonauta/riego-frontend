@@ -1,0 +1,67 @@
+
+.autorizacion {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: #f4f7f3;
+}
+
+.panel {
+  width: 100%;
+  max-width: 520px;
+  padding: 36px;
+  background: white;
+  border: 1px solid #dce5da;
+  border-radius: 12px;
+  text-align: center;
+}
+
+h1 {
+  color: #327044;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 24px 0 16px;
+}
+
+p {
+  line-height: 1.6;
+}
+
+.email {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #327044;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+button.salir {
+  background: #666;
+}
+
+.error {
+  color: #b42318;
+}

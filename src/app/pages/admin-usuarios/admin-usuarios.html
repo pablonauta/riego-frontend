@@ -1,0 +1,80 @@
+
+<section class="admin-usuarios">
+
+  <h2>Administración de usuarios</h2>
+
+  <p>
+    Desde aquí podés consultar las cuentas registradas
+    y sus estados de autorización.
+  </p>
+
+  <button type="button" (click)="cargarUsuarios()">
+    Actualizar listado
+  </button>
+
+  @if (cargando()) {
+    <p>Cargando usuarios...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (!cargando() && !error()) {
+
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Verificado</th>
+            <th>Autorización</th>
+            <th>Roles</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (usuario of usuarios(); track usuario.id) {
+            <tr>
+              <td>{{ usuario.nombre }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                {{ usuario.emailVerificado ? 'Sí' : 'No' }}
+              </td>
+              <td>{{ usuario.estadoAutorizacion }}</td>
+              <td>{{ usuario.roles.join(', ') }}</td>
+
+              <td>
+
+                @if (usuario.estadoAutorizacion === 'PENDIENTE') {
+                  <button
+                    type="button"
+                    [disabled]="!usuario.emailVerificado"
+                    (click)="aprobarUsuario(usuario)">
+                    Aprobar
+                  </button>
+                }
+
+                @if (usuario.estadoAutorizacion === 'APROBADO' &&
+                    !usuario.roles.includes('ROLE_ADMIN')) {
+                  <button
+                    type="button"
+                    class="btn-suspender"
+                    (click)="suspenderUsuario(usuario)">
+                    Suspender
+                  </button>
+                }
+
+              </td>
+
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  }
+
+</section>

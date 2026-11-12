@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, switchMap, map } from 'rxjs';
@@ -9,7 +10,7 @@ export interface LuzFotoItemDto {
   ts: string;
   tipo: string;
   sizeBytes: number;
-  url: string; // "/api/luz/fotos/123"
+  url: string;
 }
 
 @Injectable({
@@ -22,13 +23,15 @@ export class LuzFotoService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Trae metadata de la última foto
+   * Obtiene los datos de la última fotografía.
    */
-  getUltima(instalacionId: number, tipo: string = 'HISTORICO')
-    : Observable<LuzFotoItemDto> {
+  getUltima(
+    instalacionId: number,
+    tipo: string = 'HISTORICO'
+  ): Observable<LuzFotoItemDto> {
 
     return this.http.get<LuzFotoItemDto>(
-      `${this.apiUrl}/api/luz/fotos/ultima`,
+      `${this.apiUrl}/luz/fotos/ultima`,
       {
         params: {
           instalacionId,
@@ -39,20 +42,26 @@ export class LuzFotoService {
   }
 
   /**
-   * Descarga la imagen real como Blob (con Authorization)
+   * Descarga la fotografía como Blob.
+   * La URL relativa ya incluye /api.
    */
   getFotoBlob(urlRelativa: string): Observable<Blob> {
+
+    const baseUrl = this.apiUrl.replace(/\/api\/?$/, '');
+
     return this.http.get(
-      `${this.apiUrl}${urlRelativa}`,
+      `${baseUrl}${urlRelativa}`,
       { responseType: 'blob' }
     );
   }
 
   /**
-   * Atajo: última foto -> blob -> objectURL
+   * Obtiene la última fotografía como Object URL.
    */
-  getUltimaFotoObjectUrl(instalacionId: number, tipo: string = 'HISTORICO')
-    : Observable<string> {
+  getUltimaFotoObjectUrl(
+    instalacionId: number,
+    tipo: string = 'HISTORICO'
+  ): Observable<string> {
 
     return this.getUltima(instalacionId, tipo).pipe(
       switchMap(dto => this.getFotoBlob(dto.url)),

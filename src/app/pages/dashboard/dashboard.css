@@ -38,3 +38,67 @@
   margin: 0.5rem 0 0;
   color: var(--color-text);
 }
+
+/* MONITOREO POR CAMARAS */
+
+.camaras-section {
+  margin-top: 2rem;
+}
+
+.camaras-section h2 {
+  color: var(--color-primary-dark);
+  margin-bottom: 1rem;
+}
+
+.camaras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.camaras-grid app-ultima-foto {
+  display: block;
+  min-width: 0;
+}
+
+@media (max-width: 650px) {
+  .camaras-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Navegación principal */
+
+.dashboard-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0 28px;
+}
+
+.dashboard-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 22px;
+  background-color: #327044;
+  color: white;
+
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+
+  transition: background-color 0.2s;
+}
+
+.dashboard-nav a:hover {
+  background-color: #245632;
+}
+
+.dashboard-nav a:focus-visible {
+  outline: 3px solid #86b995;
+  outline-offset: 3px;
+}

@@ -1,0 +1,52 @@
+
+<section class="autorizacion">
+  <div class="panel">
+
+    <h1>Planteraan</h1>
+
+    @if (estado() === 'PENDIENTE') {
+      <h2>Tu cuenta está pendiente de autorización</h2>
+
+      <p>
+        Tu correo electrónico fue verificado correctamente.
+      </p>
+
+      <p>
+        Un administrador debe aprobar tu cuenta antes
+        de que puedas acceder al sistema de riego.
+      </p>
+
+      <p>No necesitás registrarte nuevamente.</p>
+    }
+
+    @if (estado() === 'RECHAZADO') {
+      <h2>Solicitud no aprobada</h2>
+      <p>Tu solicitud de acceso no fue aprobada.</p>
+    }
+
+    @if (estado() === 'SUSPENDIDO') {
+      <h2>Cuenta suspendida</h2>
+      <p>Tu acceso a Planteraan está suspendido.</p>
+    }
+
+    <p class="email">{{ email() }}</p>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="acciones">
+      <button
+        type="button"
+        (click)="consultarEstado()"
+        [disabled]="consultando()">
+        {{ consultando() ? 'Consultando...' : 'Consultar estado' }}
+      </button>
+
+      <button type="button" class="salir" (click)="salir()">
+        Cerrar sesión
+      </button>
+    </div>
+
+  </div>
+</section>

@@ -84,11 +84,16 @@ export class AuthService {
   return !!localStorage.getItem('token');
 }
 
- me() {
+
+me() {
   return this.http.get<{
     name: string;
     principalClass: string;
     authorities: string[];
-  }>('/api/auth/me');
+    emailVerificado: boolean;
+    estadoAutorizacion:
+      'PENDIENTE' | 'APROBADO' | 'RECHAZADO' | 'SUSPENDIDO';
+  }>(`${this.apiBase}/auth/me`);
 }
+
 }

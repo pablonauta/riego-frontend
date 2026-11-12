@@ -1,0 +1,95 @@
+
+.admin-usuarios {
+  padding: 24px 0;
+}
+
+.admin-usuarios h2 {
+  margin-bottom: 12px;
+}
+
+.admin-usuarios p {
+  line-height: 1.6;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  background: #327044;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tabla-contenedor {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #edf3ed;
+}
+
+.error {
+  color: #b42318;
+}
+
+
+.btn-suspender {
+  background-color: #b42318;
+  color: white;
+}
+
+.btn-suspender:hover {
+  background-color: #8f1d14;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* Evitar que la tabla se desborde */
+
+.admin-usuarios {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.tabla-contenedor {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.admin-usuarios table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.admin-usuarios th,
+.admin-usuarios td {
+  padding: 10px 8px;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  vertical-align: middle;
+}
+
+.admin-usuarios button {
+  max-width: 100%;
+}

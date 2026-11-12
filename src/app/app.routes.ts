@@ -1,8 +1,11 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
 
+import { AutorizacionPendiente } from './pages/autorizacion-pendiente/autorizacion-pendiente';
 // Landing
 import { LandingComponent } from './pages/landing/landing';
+
+import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
 
 // Login
 import { LoginComponent } from './pages/login/login';
@@ -57,20 +60,32 @@ export const routes: Routes = [
     path: 'reset-password',
     component: ResetPasswordComponent
   },
-  
- 
+
+
   {
   path: 'verificacion-pendiente',
   component: VerificacionPendienteComponent
   },
-   
+
+  {
+  path: 'autorizacion-pendiente',
+  component: AutorizacionPendiente,
+  canActivate: [AuthGuard]
+},
+
   {
   path: 'dashboard',
   component: Dashboard,
   canActivate: [AuthGuard],
   children: [
     { path: '', component: DashboardHome },   // ✅ home del dashboard
-    { path: 'bombas', component: BombasPage } // ✅ bombas
+    { path: 'bombas', component: BombasPage },// ✅ bombas
+    {
+  path: 'usuarios',
+  component: AdminUsuarios,
+  canActivate: [AuthGuard],
+  data: { roles: ['ROLE_ADMIN'] }
+}
   ]
 },
 

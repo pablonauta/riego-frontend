@@ -36,6 +36,22 @@ export class LoginComponent implements OnInit {
     });
   }
 
+
+private dirigirSegunEstado(estado: string): void {
+
+  if (estado === 'APROBADO') {
+    this.router.navigate(['/dashboard'], {
+      replaceUrl: true
+    });
+    return;
+  }
+
+  this.router.navigate(['/autorizacion-pendiente'], {
+    replaceUrl: true
+  });
+}
+
+
   ngOnInit(): void {
 
   //  mensaje si venimos del link de verificación
@@ -56,7 +72,7 @@ export class LoginComponent implements OnInit {
 
       localStorage.setItem('usuario', JSON.stringify(me));
 
-      this.router.navigate(['/dashboard'], { replaceUrl: true });
+      this.dirigirSegunEstado(me.estadoAutorizacion);
     },
     error: (err) => {
       console.warn('Token invalido o vencido, limpiando sesion', err);
@@ -85,26 +101,51 @@ export class LoginComponent implements OnInit {
 };
 
     this.authService.login(payload).subscribe({
-  next: (resp) => {
-    console.log('LOGIN OK', resp);
+   next: (resp) => {
 
-    this.authService.guardarSesion(resp.token, null);
+    // Guardamos el JWT recibido del backend
+    this.authService.guardarSesion(resp.token);
 
-    this.router.navigate(['/dashboard'], { replaceUrl: true });
+    // Consultamos al backend para obtener el usuario y sus roles
+    this.authService.me().subscribe({
+      next: (me) => {
+
+        this.authService.guardarSesion(resp.token, me);
+
+        console.log('Usuario autenticado:', me.name);
+        console.log('Roles:', me.authorities);
+
+        this.dirigirSegunEstado(me.estadoAutorizacion);
+      },
+
+      error: (err) => {
+        console.error('No se pudo obtener el usuario:', err);
+
+        this.authService.logout();
+
+        this.errorMessage.set(
+          'No se pudo validar la sesión.'
+        );
+      }
+    });
   },
+
   error: (err) => {
 
-    if (err.status === 403 && err?.error?.code === 'EMAIL_NOT_VERIFIED') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
+    if (err.status === 403 &&
+        err?.error?.code === 'EMAIL_NOT_VERIFIED') {
+
+      this.authService.logout();
 
       localStorage.setItem('email-pendiente', payload.email);
 
-      this.router.navigate(['/verificacion-pendiente'], { replaceUrl: true });
+      this.router.navigate(['/verificacion-pendiente'], {
+        replaceUrl: true
+      });
+
       return;
     }
 
-    // (opcional, pero recomendable)
     if (err.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('usuario');
@@ -114,6 +155,8 @@ export class LoginComponent implements OnInit {
       err?.error?.message ?? 'Usuario o contraseña incorrectos'
     );
   }
+
+
 });
 
   }
