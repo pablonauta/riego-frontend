@@ -24,6 +24,7 @@ export interface EventoElectrovalvulaResumen {
   usuario: string;
   accion: AccionValvula;
   resultado: ResultadoEvento;
+  origen: 'MANUAL' | 'AUTOMATICO';
   estadoInformado: EstadoValvula;
   solicitadoEn: string;
   resueltoEn: string | null;

@@ -64,6 +64,7 @@
             <th scope="col">Fecha y hora</th>
             <th scope="col">Usuario</th>
             <th scope="col">Orden</th>
+            <th scope="col">Origen</th>
             <th scope="col">Resultado</th>
             <th scope="col">Estado informado</th>
             <th scope="col">Detalle</th>
@@ -74,7 +75,14 @@
             <tr>
               <td>{{ evento.solicitadoEn | date:'dd/MM/yyyy HH:mm:ss' }}</td>
               <td>{{ evento.usuario }}</td>
-              <td>{{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}</td>
+             <td>{{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}</td>
+              <td>
+                @switch (evento.origen) {
+                  @case ('MANUAL') { Manual }
+                  @case ('AUTOMATICO') { Automático }
+                  @default { — }
+                }
+              </td>
               <td>
                 @switch (evento.resultado) {
                   @case ('CONFIRMADO') { Confirmado }
