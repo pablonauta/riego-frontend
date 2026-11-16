@@ -1,0 +1,51 @@
+<h2>Electroválvulas</h2>
+
+@if (esAdmin && !cargando() && !error() && electrovalvulas().length === 0) {
+  @if (mostrarAlta()) {
+    <form (submit)="$event.preventDefault(); guardarElectrovalvula(nombre.value, habilitada.checked)">
+      <label for="nombre-valvula">Nombre</label>
+      <input id="nombre-valvula" #nombre type="text" required maxlength="255">
+
+      <label>
+        <input #habilitada type="checkbox" checked>
+        Habilitada
+      </label>
+
+      <button type="submit" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}
+      </button>
+
+      <button type="button" [disabled]="guardando()"
+              (click)="mostrarAlta.set(false); errorAlta.set('')">
+        Cancelar
+      </button>
+
+      @if (errorAlta()) {
+        <p role="alert">{{ errorAlta() }}</p>
+      }
+    </form>
+  } @else {
+    <button type="button" (click)="mostrarAlta.set(true)">
+      Agregar electroválvula
+    </button>
+  }
+}
+
+@if (cargando()) {
+  <p role="status">Cargando electroválvulas…</p>
+} @else if (error()) {
+  <p role="alert">{{ error() }}</p>
+} @else {
+  @if (electrovalvulas().length === 0) {
+    <p>No hay electroválvulas registradas en esta instalación.</p>
+  } @else {
+    <ul>
+      @for (valvula of electrovalvulas(); track valvula.id) {
+        <li>
+          <a [routerLink]="[valvula.id]">{{ valvula.nombre }}</a>
+          <span> · {{ valvula.habilitada ? 'Habilitada' : 'Deshabilitada' }}</span>
+        </li>
+      }
+    </ul>
+  }
+}

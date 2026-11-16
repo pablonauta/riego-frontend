@@ -1,0 +1,111 @@
+<h2>Historial de la electroválvula</h2>
+
+<section aria-labelledby="titulo-control">
+  <h2 id="titulo-control">Control manual</h2>
+
+  <button
+    type="button"
+    (click)="operarValvula('ABRIR')"
+    [disabled]="!puedeOperar || ordenPendiente() !== null">
+    Abrir válvula
+  </button>
+
+  <button
+    type="button"
+    (click)="operarValvula('CERRAR')"
+    [disabled]="!puedeOperar || ordenPendiente() !== null">
+    Cerrar válvula
+  </button>
+
+  @if (!puedeOperar) {
+    <p>Solo administradores y operadores pueden abrir y cerrar la válvula.</p>
+  } @else if (ordenPendiente() === 'ABRIR') {
+    <p role="status">Enviando orden de apertura…</p>
+  } @else if (ordenPendiente() === 'CERRAR') {
+    <p role="status">Enviando orden de cierre…</p>
+  } @else if (mensajeOrden()) {
+    <p role="status">{{ mensajeOrden() }}</p>
+  }
+</section>
+
+
+
+<div role="group" aria-label="Filtrar por resultado">
+  <button type="button" (click)="cambiarFiltro()"
+          [attr.aria-pressed]="filtro() === undefined">
+    Todos
+  </button>
+  <button type="button" (click)="cambiarFiltro('CONFIRMADO')"
+          [attr.aria-pressed]="filtro() === 'CONFIRMADO'">
+    Confirmados
+  </button>
+  <button type="button" (click)="cambiarFiltro('NO_CONFIRMADO')"
+          [attr.aria-pressed]="filtro() === 'NO_CONFIRMADO'">
+    Sin confirmar
+  </button>
+  <button type="button" (click)="cambiarFiltro('PENDIENTE')"
+          [attr.aria-pressed]="filtro() === 'PENDIENTE'">
+    Pendientes
+  </button>
+</div>
+
+@if (cargando()) {
+  <p role="status">Cargando historial…</p>
+} @else if (error()) {
+  <p role="alert">{{ error() }}</p>
+} @else if (historial(); as datos) {
+  @if (datos.eventos.length === 0) {
+    <p>No hay eventos para mostrar con este filtro.</p>
+  } @else {
+    <div class="tabla-historial">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Fecha y hora</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Orden</th>
+            <th scope="col">Resultado</th>
+            <th scope="col">Estado informado</th>
+            <th scope="col">Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evento of datos.eventos; track evento.id) {
+            <tr>
+              <td>{{ evento.solicitadoEn | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+              <td>{{ evento.usuario }}</td>
+              <td>{{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}</td>
+              <td>
+                @switch (evento.resultado) {
+                  @case ('CONFIRMADO') { Confirmado }
+                  @case ('NO_CONFIRMADO') { Sin confirmar }
+                  @case ('PENDIENTE') { Pendiente }
+                }
+              </td>
+              <td>
+                @switch (evento.estadoInformado) {
+                  @case ('ABIERTA') { Abierta }
+                  @case ('CERRADA') { Cerrada }
+                  @case ('DESCONOCIDA') { Desconocido }
+                }
+              </td>
+              <td>{{ evento.detalle || '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <nav aria-label="Páginas del historial">
+      <button type="button" (click)="irAPagina(datos.pagina - 1)"
+              [disabled]="datos.pagina === 0">
+        Anterior
+      </button>
+      <span>Página {{ datos.pagina + 1 }} de {{ datos.totalPaginas }}</span>
+      <button type="button" (click)="irAPagina(datos.pagina + 1)"
+              [disabled]="datos.pagina + 1 >= datos.totalPaginas">
+        Siguiente
+      </button>
+    </nav>
+  }
+}

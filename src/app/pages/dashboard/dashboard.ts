@@ -32,4 +32,9 @@ export class Dashboard {
 
     return usuario?.authorities?.includes('ROLE_ADMIN') ?? false;
   }
+
+  get puedeVerElectrovalvulas(): boolean {
+    const roles: string[] = this.authService.getUsuarioActual()?.authorities ?? [];
+    return roles.includes('ROLE_ADMIN') || roles.includes('ROLE_LECTOR');
+}
 }

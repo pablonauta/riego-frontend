@@ -1,4 +1,3 @@
-
 <div class="dashboard-container">
 
   <!-- HEADER -->
@@ -13,16 +12,17 @@
 
   <!-- Navegación -->
   <nav class="dashboard-nav">
-
     <a routerLink="/dashboard">
       Inicio
     </a>
-    <a
-      *ngIf="esAdmin"
-      routerLink="/dashboard/usuarios">
+
+    <a *ngIf="esAdmin" routerLink="/dashboard/usuarios">
       Administrar usuarios
     </a>
 
+    <a *ngIf="puedeVerElectrovalvulas" routerLink="/dashboard/electrovalvulas">
+      Electroválvulas
+    </a>
   </nav>
 
   <!-- Rutas hijas -->

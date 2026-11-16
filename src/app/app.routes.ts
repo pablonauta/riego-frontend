@@ -73,21 +73,37 @@ export const routes: Routes = [
   canActivate: [AuthGuard]
 },
 
-  {
-  path: 'dashboard',
-  component: Dashboard,
-  canActivate: [AuthGuard],
-  children: [
-    { path: '', component: DashboardHome },   // ✅ home del dashboard
-    { path: 'bombas', component: BombasPage },// ✅ bombas
     {
-  path: 'usuarios',
-  component: AdminUsuarios,
-  canActivate: [AuthGuard],
-  data: { roles: ['ROLE_ADMIN'] }
-}
-  ]
-},
+    path: 'dashboard',
+    component: Dashboard,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: DashboardHome },
+      { path: 'bombas', component: BombasPage },
+      {
+        path: 'electrovalvulas',
+        loadComponent: () =>
+          import('./pages/electrovalvulas/electrovalvulas')
+            .then(m => m.Electrovalvulas),
+        canActivate: [AuthGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_LECTOR'] },
+      },
+      {
+        path: 'electrovalvulas/:id',
+        loadComponent: () =>
+          import('./pages/electrovalvula-detalle/electrovalvula-detalle')
+            .then(m => m.ElectrovalvulaDetalle),
+        canActivate: [AuthGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_LECTOR'] },
+      },
+      {
+        path: 'usuarios',
+        component: AdminUsuarios,
+        canActivate: [AuthGuard],
+        data: { roles: ['ROLE_ADMIN'] },
+      },
+    ],
+  },
 
   {
     path: '**',
