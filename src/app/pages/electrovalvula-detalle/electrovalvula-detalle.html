@@ -1,21 +1,23 @@
 <h2>Historial de la electroválvula</h2>
 
-<section aria-labelledby="titulo-control">
+<section class="seccion-valvula" aria-labelledby="titulo-control">
   <h2 id="titulo-control">Control manual</h2>
 
-  <button
-    type="button"
-    (click)="operarValvula('ABRIR')"
-    [disabled]="!puedeOperar || ordenPendiente() !== null">
-    Abrir válvula
-  </button>
+  <div class="acciones-control">
+    <button
+      type="button"
+      (click)="operarValvula('ABRIR')"
+      [disabled]="!puedeOperar || ordenPendiente() !== null">
+      Abrir válvula
+    </button>
 
-  <button
-    type="button"
-    (click)="operarValvula('CERRAR')"
-    [disabled]="!puedeOperar || ordenPendiente() !== null">
-    Cerrar válvula
-  </button>
+    <button
+      type="button"
+      (click)="operarValvula('CERRAR')"
+      [disabled]="!puedeOperar || ordenPendiente() !== null">
+      Cerrar válvula
+    </button>
+  </div>
 
   @if (!puedeOperar) {
     <p>Solo administradores y operadores pueden abrir y cerrar la válvula.</p>
@@ -29,47 +31,52 @@
 </section>
 
 @if (puedeOperar) {
-  <section aria-labelledby="titulo-programados">
+  <section class="seccion-valvula" aria-labelledby="titulo-programados">
     <h2 id="titulo-programados">Riegos programados</h2>
 
-    <form (submit)="programarRiego(
-  $event, fechaRiego.value, horaRiego.value,
-  minutosRiego.valueAsNumber, segundosRiego.valueAsNumber
-)">
-  <label>
-    Fecha
-    <input #fechaRiego type="date" required>
-  </label>
+    <form class="formulario-riego" (submit)="programarRiego(
+      $event, fechaRiego.value, horaRiego.value,
+      minutosRiego.valueAsNumber, segundosRiego.valueAsNumber
+    )">
+      <div class="campos-fecha">
+        <label>
+          Fecha
+          <input #fechaRiego type="date" required>
+        </label>
 
-  <label>
-    Hora de Uruguay
-    <input #horaRiego type="time" required>
-  </label>
+        <label>
+          Hora de Uruguay
+          <input #horaRiego type="time" required>
+        </label>
+      </div>
 
-  <label>
-    Minutos
-    <input #minutosRiego type="number" min="0" step="1" value="0" required>
-  </label>
+      <div class="campos-duracion">
+        <label>
+          Minutos
+          <input #minutosRiego type="number" inputmode="numeric" min="0" step="1" value="0" required>
+        </label>
 
-  <label>
-    Segundos
-    <input #segundosRiego type="number" min="0" max="59" step="1" value="15" required>
-  </label>
+        <label>
+          Segundos
+          <input #segundosRiego type="number" inputmode="numeric" min="0" max="59" step="1" value="15" required>
+        </label>
+      </div>
 
-  <button type="submit" [disabled]="guardandoRiego() || cargandoProgramados()">
-    {{ guardandoRiego() ? 'Guardando…' : 'Programar riego' }}
-  </button>
-</form>
+      <button type="submit" [disabled]="guardandoRiego() || cargandoProgramados()">
+        {{ guardandoRiego() ? 'Guardando…' : 'Programar riego' }}
+      </button>
+    </form>
 
-@if (mensajeRiego()) {
-  <p role="status">{{ mensajeRiego() }}</p>
-}
+    @if (mensajeRiego()) {
+      <p role="status">{{ mensajeRiego() }}</p>
+    }
 
-@if (errorRiego()) {
-  <p role="alert">{{ errorRiego() }}</p>
-}
+    @if (errorRiego()) {
+      <p role="alert">{{ errorRiego() }}</p>
+    }
 
     <button
+      class="actualizar-programados"
       type="button"
       (click)="cargarProgramados()"
       [disabled]="cargandoProgramados()">
@@ -83,24 +90,39 @@
     } @else if (programados().length === 0) {
       <p>No hay riegos programados registrados.</p>
     } @else {
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Hora prevista (Uruguay)</th>
-            <th scope="col">Duración</th>
-            <th scope="col">Estado</th>
-            <th scope="col">Detalle</th>
+      <table class="tabla-valvula tabla-programados" role="table" aria-label="Riegos programados">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">ID</th>
+            <th scope="col" role="columnheader">Hora prevista (Uruguay)</th>
+            <th scope="col" role="columnheader">Duración</th>
+            <th scope="col" role="columnheader">Estado</th>
+            <th scope="col" role="columnheader">Detalle</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           @for (riego of programados(); track riego.id) {
-            <tr>
-              <td>{{ riego.id }}</td>
-              <td>{{ riego.programadoPara | date:'dd/MM/yyyy HH:mm:ss':'-0300' }}</td>
-              <td>{{ riego.duracionSegundos }} s</td>
-              <td>{{ riego.estado }}</td>
-              <td>{{ riego.detalle || '—' }}</td>
+            <tr role="row">
+              <td class="dato-identificador" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">ID</span>
+                {{ riego.id }}
+              </td>
+              <td class="dato-fecha" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Hora prevista (Uruguay)</span>
+                {{ riego.programadoPara | date:'dd/MM/yyyy HH:mm:ss':'-0300' }}
+              </td>
+              <td class="dato-duracion" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Duración</span>
+                {{ riego.duracionSegundos }} s
+              </td>
+              <td class="dato-estado" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Estado</span>
+                {{ riego.estado }}
+              </td>
+              <td class="dato-detalle" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Detalle</span>
+                {{ riego.detalle || '—' }}
+              </td>
             </tr>
           }
         </tbody>
@@ -109,9 +131,7 @@
   </section>
 }
 
-
-
-<div role="group" aria-label="Filtrar por resultado">
+<div class="filtros-historial" role="group" aria-label="Filtrar por resultado">
   <button type="button" (click)="cambiarFiltro()"
           [attr.aria-pressed]="filtro() === undefined">
     Todos
@@ -138,79 +158,92 @@
   @if (datos.eventos.length === 0) {
     <p>No hay eventos para mostrar con este filtro.</p>
   } @else {
-@if (cargandoVideo()) {
-  <p role="status">Cargando grabación…</p>
-}
+    @if (cargandoVideo()) {
+      <p role="status">Cargando grabación…</p>
+    }
 
-@if (errorVideo()) {
-  <p role="alert">{{ errorVideo() }}</p>
-}
+    @if (errorVideo()) {
+      <p role="alert">{{ errorVideo() }}</p>
+    }
 
-@if (videoUrl(); as url) {
-  <div>
-    <video [src]="url" controls playsinline style="width: 100%; max-width: 640px"></video>
-    <button type="button" (click)="cerrarVideo()">Cerrar video</button>
-  </div>
-}
+    @if (videoUrl(); as url) {
+      <div class="grabacion-riego">
+        <video [src]="url" controls playsinline></video>
+        <button type="button" (click)="cerrarVideo()">Cerrar video</button>
+      </div>
+    }
 
     <div class="tabla-historial">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Fecha y hora</th>
-            <th scope="col">Usuario</th>
-            <th scope="col">Orden</th>
-            <th scope="col">Origen</th>
-            <th scope="col">Resultado</th>
-            <th scope="col">Estado informado</th>
-            <th scope="col">Detalle</th>
+      <table class="tabla-valvula tabla-eventos" role="table" aria-label="Historial de la electroválvula">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Fecha y hora</th>
+            <th scope="col" role="columnheader">Usuario</th>
+            <th scope="col" role="columnheader">Orden</th>
+            <th scope="col" role="columnheader">Origen</th>
+            <th scope="col" role="columnheader">Resultado</th>
+            <th scope="col" role="columnheader">Estado informado</th>
+            <th scope="col" role="columnheader">Detalle</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           @for (evento of datos.eventos; track evento.id) {
-            <tr>
-              <td>{{ evento.solicitadoEn | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-              <td>{{ evento.usuario }}</td>
-             <td>
-              {{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}
+            <tr role="row">
+              <td class="dato-fecha" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Fecha y hora</span>
+                {{ evento.solicitadoEn | date:'dd/MM/yyyy HH:mm:ss' }}
+              </td>
+              <td class="dato-usuario" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Usuario</span>
+                {{ evento.usuario }}
+              </td>
+              <td class="dato-orden" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Orden</span>
+                {{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}
 
-              @if (evento.tieneVideo) {
-                <button type="button"
-                        (click)="verGrabacion(evento.id)"
-                        [disabled]="cargandoVideo()">
-                  Ver grabación
-                </button>
-              }
-            </td>
-              <td>
+                @if (evento.tieneVideo) {
+                  <button type="button"
+                          (click)="verGrabacion(evento.id)"
+                          [disabled]="cargandoVideo()">
+                    Ver grabación
+                  </button>
+                }
+              </td>
+              <td class="dato-origen" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Origen</span>
                 @switch (evento.origen) {
                   @case ('MANUAL') { Manual }
                   @case ('AUTOMATICO') { Automático }
                   @default { — }
                 }
               </td>
-              <td>
+              <td class="dato-resultado" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Resultado</span>
                 @switch (evento.resultado) {
                   @case ('CONFIRMADO') { Confirmado }
                   @case ('NO_CONFIRMADO') { Sin confirmar }
                   @case ('PENDIENTE') { Pendiente }
                 }
               </td>
-              <td>
+              <td class="dato-estado" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Estado informado</span>
                 @switch (evento.estadoInformado) {
                   @case ('ABIERTA') { Abierta }
                   @case ('CERRADA') { Cerrada }
                   @case ('DESCONOCIDA') { Desconocido }
                 }
               </td>
-              <td>{{ evento.detalle || '—' }}</td>
+              <td class="dato-detalle" role="cell">
+                <span class="etiqueta-movil" aria-hidden="true">Detalle</span>
+                {{ evento.detalle || '—' }}
+              </td>
             </tr>
           }
         </tbody>
       </table>
     </div>
 
-    <nav aria-label="Páginas del historial">
+    <nav class="paginacion-historial" aria-label="Páginas del historial">
       <button type="button" (click)="irAPagina(datos.pagina - 1)"
               [disabled]="datos.pagina === 0">
         Anterior

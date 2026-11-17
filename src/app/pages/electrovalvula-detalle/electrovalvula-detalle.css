@@ -1,0 +1,199 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+:host h2 {
+  text-align: left;
+}
+
+:host button {
+  width: auto;
+  max-width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: .55rem .85rem;
+  background: var(--verde-principal);
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+:host button:focus-visible,
+.formulario-riego input:focus-visible {
+  outline: 2px solid var(--verde-oscuro);
+  outline-offset: 2px;
+}
+
+.seccion-valvula {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--verde-suave);
+}
+
+.acciones-control,
+.filtros-historial,
+.paginacion-historial {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+}
+
+.formulario-riego {
+  display: grid;
+  justify-items: start;
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+
+.campos-fecha,
+.campos-duracion {
+  display: grid;
+  gap: .5rem;
+}
+
+.campos-fecha {
+  width: 100%;
+  max-width: 21rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+
+.campos-duracion {
+  grid-template-columns: repeat(2, 5rem);
+}
+
+.formulario-riego label {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-width: 0;
+  gap: .3rem;
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+.formulario-riego input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: .35rem;
+  border: 1px solid var(--verde-principal);
+  border-radius: .5rem;
+  background: var(--blanco);
+  color: var(--gris-texto);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.campos-duracion input {
+  text-align: center;
+}
+
+:host .actualizar-programados,
+:host .filtros-historial button[aria-pressed="false"] {
+  border: 1px solid var(--verde-principal);
+  background: var(--blanco);
+  color: var(--verde-oscuro);
+}
+
+.filtros-historial,
+.grabacion-riego {
+  margin-bottom: 1rem;
+}
+
+.grabacion-riego video {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: .5rem;
+}
+
+.tabla-valvula {
+  width: 100%;
+  margin: .75rem 0;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+
+.tabla-valvula th,
+.tabla-valvula td {
+  padding: .55rem;
+  border-bottom: 1px solid var(--verde-suave);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.tabla-valvula th {
+  background: var(--verde-suave);
+  color: var(--verde-oscuro);
+}
+
+.etiqueta-movil {
+  display: none;
+}
+
+:host .dato-orden button {
+  margin-top: .35rem;
+}
+
+@media (max-width: 650px) {
+  .filtros-historial {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :host .filtros-historial button {
+    width: 100%;
+  }
+
+  .tabla-valvula,
+  .tabla-valvula tbody {
+    display: block;
+  }
+
+  .tabla-valvula thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .tabla-valvula tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .65rem .75rem;
+    margin-bottom: .65rem;
+    padding: .75rem;
+    border: 1px solid #b7d8bc;
+    border-radius: .65rem;
+  }
+
+  .tabla-valvula td {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .tabla-valvula .dato-fecha,
+  .tabla-valvula .dato-usuario,
+  .tabla-valvula .dato-detalle {
+    grid-column: 1 / -1;
+  }
+
+  .tabla-programados .dato-fecha {
+    order: -1;
+  }
+
+  .etiqueta-movil {
+    display: block;
+    margin-bottom: .15rem;
+    color: var(--verde-oscuro);
+    font-size: .8rem;
+    font-weight: 700;
+  }
+}
