@@ -197,3 +197,20 @@
     font-weight: 700;
   }
 }
+
+@media (min-width: 651px) {
+  .tabla-valvula {
+    font-size: 0.85rem;
+  }
+
+  .tabla-valvula th,
+  .tabla-valvula td {
+    padding: 0.45rem 0.5rem;
+    overflow-wrap: normal;
+  }
+
+  .tabla-valvula .dato-usuario,
+  .tabla-valvula .dato-detalle {
+    overflow-wrap: anywhere;
+  }
+}
