@@ -138,6 +138,21 @@
   @if (datos.eventos.length === 0) {
     <p>No hay eventos para mostrar con este filtro.</p>
   } @else {
+@if (cargandoVideo()) {
+  <p role="status">Cargando grabación…</p>
+}
+
+@if (errorVideo()) {
+  <p role="alert">{{ errorVideo() }}</p>
+}
+
+@if (videoUrl(); as url) {
+  <div>
+    <video [src]="url" controls playsinline style="width: 100%; max-width: 640px"></video>
+    <button type="button" (click)="cerrarVideo()">Cerrar video</button>
+  </div>
+}
+
     <div class="tabla-historial">
       <table>
         <thead>
@@ -156,7 +171,17 @@
             <tr>
               <td>{{ evento.solicitadoEn | date:'dd/MM/yyyy HH:mm:ss' }}</td>
               <td>{{ evento.usuario }}</td>
-             <td>{{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}</td>
+             <td>
+              {{ evento.accion === 'ABRIR' ? 'Abrir' : 'Cerrar' }}
+
+              @if (evento.tieneVideo) {
+                <button type="button"
+                        (click)="verGrabacion(evento.id)"
+                        [disabled]="cargandoVideo()">
+                  Ver grabación
+                </button>
+              }
+            </td>
               <td>
                 @switch (evento.origen) {
                   @case ('MANUAL') { Manual }

@@ -46,6 +46,47 @@ export class ElectrovalvulaDetalle {
   readonly ordenPendiente = signal<AccionValvula | null>(null);
   readonly mensajeOrden = signal('');
 
+    readonly videoUrl = signal<string | null>(null);
+  readonly cargandoVideo = signal(false);
+  readonly errorVideo = signal('');
+
+  verGrabacion(eventoId: number): void {
+    const id = Number(this.ruta.snapshot.paramMap.get('id'));
+
+    if (!Number.isSafeInteger(id) || id <= 0 || this.cargandoVideo()) {
+      return;
+    }
+
+    this.cerrarVideo();
+    this.errorVideo.set('');
+    this.cargandoVideo.set(true);
+
+    this.valvulaService.obtenerVideo(1, id, eventoId).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.cargandoVideo.set(false)),
+    ).subscribe({
+      next: video => this.videoUrl.set(URL.createObjectURL(video)),
+      error: (error: HttpErrorResponse) => {
+        this.errorVideo.set(error.status === 404
+          ? 'La grabación ya no está disponible.'
+          : 'No se pudo cargar la grabación.');
+      },
+    });
+  }
+
+  cerrarVideo(): void {
+    const url = this.videoUrl();
+    this.videoUrl.set(null);
+
+    if (url) {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.cerrarVideo();
+  }
+
   get puedeOperar(): boolean {
     const roles: string[] = this.authService.getUsuarioActual()?.authorities ?? [];
     return roles.includes('ROLE_ADMIN') || roles.includes('ROLE_OPERADOR');

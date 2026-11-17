@@ -37,6 +37,7 @@ export interface EventoElectrovalvulaResumen {
   solicitadoEn: string;
   resueltoEn: string | null;
   detalle: string | null;
+  tieneVideo?: boolean;
 }
 
 export interface HistorialElectrovalvulaPagina {
@@ -74,6 +75,14 @@ export class ValvulaService {
     }
 
     return this.http.get<HistorialElectrovalvulaPagina>(url, { params });
+  }
+
+  obtenerVideo(instalacionId: number, electrovalvulaId: number, eventoId: number) {
+    const url =
+      `${environment.apiUrl}/admin/instalaciones/${instalacionId}` +
+      `/electrovalvulas/${electrovalvulaId}/historial/${eventoId}/video`;
+
+    return this.http.get(url, { responseType: 'blob' });
   }
 
 
