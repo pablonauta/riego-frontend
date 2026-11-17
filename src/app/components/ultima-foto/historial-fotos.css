@@ -1,0 +1,23 @@
+﻿form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+label {
+  display: inline-flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+figure {
+  margin: .75rem 0 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}

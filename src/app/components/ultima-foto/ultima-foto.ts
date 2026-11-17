@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { finalize, switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { HistorialFotosComponent } from './historial-fotos';
 
 export interface LuzFoto {
   id: number;
@@ -17,7 +18,7 @@ export interface LuzFoto {
 @Component({
   selector: 'app-ultima-foto',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HistorialFotosComponent],
   templateUrl: './ultima-foto.html',
   styleUrls: ['./ultima-foto.css']
 })
@@ -39,6 +40,8 @@ export class UltimaFotoComponent implements OnInit, OnDestroy {
   private lastObjectUrl: string | null = null;
   private apiUrl = environment.apiUrl; // ej: "https://api.tecnografic.com.uy"
   private backendUrl = environment.apiUrl.replace(/\/api$/, '');
+
+  readonly mostrarHistorial = signal(false);
 
   constructor(private http: HttpClient) {}
 

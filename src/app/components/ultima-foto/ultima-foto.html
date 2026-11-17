@@ -25,4 +25,18 @@
     </strong>
   </div>
 
+  <button
+  type="button"
+  [attr.aria-expanded]="mostrarHistorial()"
+  (click)="mostrarHistorial.set(!mostrarHistorial())">
+  {{ mostrarHistorial() ? 'Cerrar historial' : 'Ver historial' }}
+</button>
+
+@if (mostrarHistorial()) {
+  <app-historial-fotos
+    [instalacionId]="instalacionId"
+    [tipo]="tipo">
+  </app-historial-fotos>
+}
+
 </div>

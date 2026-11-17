@@ -22,6 +22,19 @@ export class LuzFotoService {
 
   constructor(private http: HttpClient) {}
 
+  getHistorial(
+  instalacionId: number,
+  tipo: string,
+  from: string,
+  to: string,
+  page: number,
+  size: number
+): Observable<LuzFotoItemDto[]> {
+  return this.http.get<LuzFotoItemDto[]>(`${this.apiUrl}/luz/fotos`, {
+    params: { instalacionId, tipo, from, to, page, size }
+  });
+}
+
   /**
    * Obtiene los datos de la última fotografía.
    */

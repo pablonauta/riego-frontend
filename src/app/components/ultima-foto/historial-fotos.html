@@ -1,0 +1,83 @@
+﻿<section>
+  <form (submit)="$event.preventDefault(); buscar(desde.value, hasta.value)">
+    <label>
+      Desde
+      <input #desde type="date" [value]="hoy" required>
+    </label>
+
+    <label>
+      Hasta
+      <input #hasta type="date" [value]="hoy" required>
+    </label>
+
+    <button type="submit">Buscar</button>
+  </form>
+
+  @if (cargando()) {
+    <p role="status">Buscando fotos…</p>
+  }
+
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+
+  @if (fotos().length) {
+    <p>
+      <button
+        type="button"
+        (click)="cargarPagina(pagina() - 1)"
+        [disabled]="cargando() || pagina() === 0">
+        Anterior
+      </button>
+
+      Página {{ pagina() + 1 }}
+
+      <button
+        type="button"
+        (click)="cargarPagina(pagina() + 1)"
+        [disabled]="cargando() || !haySiguiente()">
+        Siguiente
+      </button>
+    </p>
+
+    <label>
+      Captura
+      <select #captura (change)="verFoto(captura.value)">
+        <option value="" [selected]="fotoSeleccionada() === null">
+          Elegí una fecha y hora
+        </option>
+
+        @for (foto of fotos(); track foto.id) {
+          <option [value]="foto.id" [selected]="fotoSeleccionada()?.id === foto.id">
+            {{ foto.ts | date:'dd/MM/yyyy HH:mm:ss' }}
+          </option>
+        }
+      </select>
+    </label>
+  } @else if (!cargando() && !error()) {
+    <p>No hay fotos en esas fechas.</p>
+  }
+
+  @if (cargandoFoto()) {
+    <p role="status">Cargando imagen…</p>
+  }
+
+  @if (errorFoto()) {
+    <p role="alert">{{ errorFoto() }}</p>
+
+    @if (fotoSeleccionada(); as seleccionada) {
+      <button type="button" (click)="verFoto(seleccionada.id.toString())">
+        Reintentar
+      </button>
+    }
+  }
+
+  @if (imagen(); as url) {
+    <figure>
+      <img [src]="url" alt="Captura histórica de la cámara">
+      <figcaption>
+        {{ fotoSeleccionada()?.ts | date:'dd/MM/yyyy HH:mm:ss' }}
+      </figcaption>
+    </figure>
+  }
+</section>
