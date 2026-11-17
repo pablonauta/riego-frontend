@@ -28,6 +28,87 @@
   }
 </section>
 
+@if (puedeOperar) {
+  <section aria-labelledby="titulo-programados">
+    <h2 id="titulo-programados">Riegos programados</h2>
+
+    <form (submit)="programarRiego(
+  $event, fechaRiego.value, horaRiego.value,
+  minutosRiego.valueAsNumber, segundosRiego.valueAsNumber
+)">
+  <label>
+    Fecha
+    <input #fechaRiego type="date" required>
+  </label>
+
+  <label>
+    Hora de Uruguay
+    <input #horaRiego type="time" required>
+  </label>
+
+  <label>
+    Minutos
+    <input #minutosRiego type="number" min="0" step="1" value="0" required>
+  </label>
+
+  <label>
+    Segundos
+    <input #segundosRiego type="number" min="0" max="59" step="1" value="15" required>
+  </label>
+
+  <button type="submit" [disabled]="guardandoRiego() || cargandoProgramados()">
+    {{ guardandoRiego() ? 'Guardando…' : 'Programar riego' }}
+  </button>
+</form>
+
+@if (mensajeRiego()) {
+  <p role="status">{{ mensajeRiego() }}</p>
+}
+
+@if (errorRiego()) {
+  <p role="alert">{{ errorRiego() }}</p>
+}
+
+    <button
+      type="button"
+      (click)="cargarProgramados()"
+      [disabled]="cargandoProgramados()">
+      Actualizar
+    </button>
+
+    @if (cargandoProgramados()) {
+      <p role="status">Cargando riegos programados…</p>
+    } @else if (errorProgramados()) {
+      <p role="alert">{{ errorProgramados() }}</p>
+    } @else if (programados().length === 0) {
+      <p>No hay riegos programados registrados.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Hora prevista (Uruguay)</th>
+            <th scope="col">Duración</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (riego of programados(); track riego.id) {
+            <tr>
+              <td>{{ riego.id }}</td>
+              <td>{{ riego.programadoPara | date:'dd/MM/yyyy HH:mm:ss':'-0300' }}</td>
+              <td>{{ riego.duracionSegundos }} s</td>
+              <td>{{ riego.estado }}</td>
+              <td>{{ riego.detalle || '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+}
+
 
 
 <div role="group" aria-label="Filtrar por resultado">

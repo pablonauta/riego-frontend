@@ -11,6 +11,7 @@ import type {
   AccionValvula,
   HistorialElectrovalvulaPagina,
   ResultadoEvento,
+  RiegoProgramado,
 } from '../../services/valvula';
 
 interface ConsultaHistorial {
@@ -35,6 +36,12 @@ export class ElectrovalvulaDetalle {
   readonly filtro = signal<ResultadoEvento | undefined>(undefined);
   readonly cargando = signal(true);
   readonly error = signal('');
+  readonly programados = signal<RiegoProgramado[]>([]);
+  readonly cargandoProgramados = signal(false);
+  readonly errorProgramados = signal('');
+  readonly guardandoRiego = signal(false);
+  readonly mensajeRiego = signal('');
+  readonly errorRiego = signal('');
 
   readonly ordenPendiente = signal<AccionValvula | null>(null);
   readonly mensajeOrden = signal('');
@@ -45,6 +52,8 @@ export class ElectrovalvulaDetalle {
   }
 
   constructor() {
+    this.cargarProgramados();
+
     this.ruta.paramMap.pipe(
       switchMap(parametros => {
         const id = Number(parametros.get('id'));
@@ -52,6 +61,8 @@ export class ElectrovalvulaDetalle {
         if (!Number.isSafeInteger(id) || id <= 0) {
           return of({ historial: null, error: 'El ID de la electroválvula no es válido.' });
         }
+
+
 
         const primeraPagina: ConsultaHistorial = { pagina: 0 };
 
@@ -80,8 +91,74 @@ export class ElectrovalvulaDetalle {
     });
   }
 
+    programarRiego(
+    evento: Event,
+    fecha: string,
+    hora: string,
+    minutos: number,
+    segundos: number,
+  ): void {
+    evento.preventDefault();
+
+    if (!this.puedeOperar || this.guardandoRiego()) {
+      return;
+    }
+
+    this.mensajeRiego.set('');
+    this.errorRiego.set('');
+
+    const inicio = new Date(`${fecha}T${hora}:00-03:00`);
+    const duracion = minutos * 60 + segundos;
+
+    if (!Number.isFinite(inicio.getTime()) || inicio.getTime() <= Date.now()) {
+      this.errorRiego.set('Elegí una fecha y hora futuras.');
+      return;
+    }
+
+    if (!Number.isSafeInteger(duracion) || duracion < 1 || duracion > 2_147_483_647) {
+      this.errorRiego.set('Ingresá una duración válida de al menos 1 segundo.');
+      return;
+    }
+
+    this.guardandoRiego.set(true);
+
+    this.valvulaService.programarRiego(inicio.toISOString(), duracion).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.guardandoRiego.set(false)),
+    ).subscribe({
+      next: riego => {
+        this.mensajeRiego.set(`Riego #${riego.id} programado.`);
+        this.cargarProgramados();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorRiego.set(error.status === 400
+          ? 'Revisá que la hora siga siendo futura y que la duración sea válida.'
+          : 'No se pudo guardar el riego programado.');
+      },
+    });
+  }
+
   cambiarFiltro(resultado?: ResultadoEvento): void {
     this.consultas.next({ pagina: 0, resultado });
+  }
+
+    cargarProgramados(): void {
+    if (!this.puedeOperar || this.cargandoProgramados()) {
+      return;
+    }
+
+    this.cargandoProgramados.set(true);
+    this.errorProgramados.set('');
+
+    this.valvulaService.consultarProgramados().pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.cargandoProgramados.set(false)),
+    ).subscribe({
+      next: riegos => this.programados.set(riegos),
+      error: () => {
+        this.errorProgramados.set('No se pudieron cargar los riegos programados.');
+      },
+    });
   }
 
   irAPagina(pagina: number): void {

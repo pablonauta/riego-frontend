@@ -17,6 +17,14 @@ export interface ResultadoValvula {
   resultado: 'CONFIRMADO' | 'NO_CONFIRMADO';
 }
 
+export interface RiegoProgramado {
+  id: number;
+  programadoPara: string;
+  duracionSegundos: number;
+  estado: string;
+  detalle: string | null;
+}
+
 export type ResultadoEvento = 'PENDIENTE' | 'CONFIRMADO' | 'NO_CONFIRMADO';
 
 export interface EventoElectrovalvulaResumen {
@@ -80,6 +88,17 @@ export class ValvulaService {
     return this.http.get<{ conectado: boolean; valvula: EstadoValvula }>(
       `${this.url}/diagnostico`
     );
+  }
+
+   consultarProgramados() {
+    return this.http.get<RiegoProgramado[]>(`${this.url}/valvula/programados`);
+  }
+
+    programarRiego(programadoPara: string, duracionSegundos: number) {
+    return this.http.post<RiegoProgramado>(`${this.url}/valvula/programados`, {
+      programadoPara,
+      duracionSegundos,
+    });
   }
 
   operar(accion: AccionValvula) {
