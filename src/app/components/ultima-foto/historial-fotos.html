@@ -13,6 +13,21 @@
     <button type="submit">Buscar</button>
   </form>
 
+  @if (dias().length) {
+    <p>
+      <label>
+        Día
+        <select #dia (change)="seleccionarDia(dia.value)">
+          @for (fecha of dias(); track fecha) {
+            <option [value]="fecha" [selected]="fecha === diaSeleccionado()">
+              {{ fecha | date:'dd/MM/yyyy' }}
+            </option>
+          }
+        </select>
+      </label>
+    </p>
+  }
+
   @if (cargando()) {
     <p role="status">Buscando fotos…</p>
   }
@@ -22,40 +37,22 @@
   }
 
   @if (fotos().length) {
-    <p>
-      <button
-        type="button"
-        (click)="cargarPagina(pagina() - 1)"
-        [disabled]="cargando() || pagina() === 0">
-        Anterior
-      </button>
-
-      Página {{ pagina() + 1 }}
-
-      <button
-        type="button"
-        (click)="cargarPagina(pagina() + 1)"
-        [disabled]="cargando() || !haySiguiente()">
-        Siguiente
-      </button>
-    </p>
-
     <label>
       Captura
       <select #captura (change)="verFoto(captura.value)">
         <option value="" [selected]="fotoSeleccionada() === null">
-          Elegí una fecha y hora
+          Elegí una hora
         </option>
 
         @for (foto of fotos(); track foto.id) {
           <option [value]="foto.id" [selected]="fotoSeleccionada()?.id === foto.id">
-            {{ foto.ts | date:'dd/MM/yyyy HH:mm:ss' }}
+            {{ foto.ts | date:'HH:mm:ss' }}
           </option>
         }
       </select>
     </label>
-  } @else if (!cargando() && !error()) {
-    <p>No hay fotos en esas fechas.</p>
+  } @else if (diaSeleccionado() && !cargando() && !error()) {
+    <p>No hay fotos para ese día.</p>
   }
 
   @if (cargandoFoto()) {

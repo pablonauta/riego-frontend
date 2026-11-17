@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription, expand, reduce } from 'rxjs';
 import { LuzFotoItemDto, LuzFotoService } from '../../services/luz-foto';
 
 @Component({
@@ -15,20 +15,19 @@ export class HistorialFotosComponent implements OnInit, OnDestroy {
   @Input({ required: true }) tipo!: string;
 
   private readonly servicio = inject(LuzFotoService);
-  private readonly cantidadPorPagina = 50;
+  private readonly cantidadPorPagina = 500;
 
   readonly hoy = new Date().toLocaleDateString('sv-SE');
+  readonly dias = signal<string[]>([]);
+  readonly diaSeleccionado = signal('');
   readonly fotos = signal<LuzFotoItemDto[]>([]);
   readonly fotoSeleccionada = signal<LuzFotoItemDto | null>(null);
   readonly imagen = signal<string | null>(null);
-  readonly pagina = signal(0);
-  readonly haySiguiente = signal(false);
   readonly cargando = signal(false);
   readonly cargandoFoto = signal(false);
   readonly error = signal<string | null>(null);
   readonly errorFoto = signal<string | null>(null);
 
-  private rango?: { from: string; to: string };
   private consulta?: Subscription;
   private descarga?: Subscription;
 
@@ -47,48 +46,49 @@ export class HistorialFotosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.rango = {
-      from: new Date(`${desde}T00:00:00`).toISOString(),
-      to: new Date(`${hasta}T23:59:59.999`).toISOString()
-    };
+    const dias: string[] = [];
+    const fecha = new Date(`${desde}T12:00:00`);
+    const fin = new Date(`${hasta}T12:00:00`);
 
-    this.fotos.set([]);
-    this.pagina.set(0);
-    this.haySiguiente.set(false);
-    this.limpiarImagen();
-    this.cargarPagina(0);
+    while (fecha <= fin) {
+      dias.push(fecha.toLocaleDateString('sv-SE'));
+      fecha.setDate(fecha.getDate() + 1);
+    }
+
+    this.dias.set(dias);
+    this.seleccionarDia(hasta);
   }
 
-  cargarPagina(pagina: number): void {
-    if (!this.rango || pagina < 0) return;
-
+  seleccionarDia(dia: string): void {
     this.consulta?.unsubscribe();
-    this.cargando.set(true);
+    this.limpiarImagen();
+    this.diaSeleccionado.set(dia);
+    this.fotos.set([]);
     this.error.set(null);
+    this.cargando.set(true);
 
-    const { from, to } = this.rango;
-    this.consulta = this.servicio
-      .getHistorial(this.instalacionId, this.tipo, from, to, pagina, this.cantidadPorPagina)
-      .subscribe({
-        next: fotos => {
-          this.cargando.set(false);
+    const from = new Date(`${dia}T00:00:00`).toISOString();
+    const to = new Date(`${dia}T23:59:59.999`).toISOString();
+    const pedirPagina = (pagina: number) => this.servicio.getHistorial(
+      this.instalacionId, this.tipo, from, to, pagina, this.cantidadPorPagina
+    );
 
-          // Si la última página tenía 50 fotos exactas, la siguiente llega vacía.
-          if (fotos.length === 0 && pagina > this.pagina()) {
-            this.haySiguiente.set(false);
-            return;
-          }
-
-          this.limpiarImagen();
-          this.fotos.set(fotos);
-          this.pagina.set(pagina);
-          this.haySiguiente.set(fotos.length === this.cantidadPorPagina);
-        },
-        error: () => {
-          this.cargando.set(false);
-          this.error.set('No se pudo consultar el historial.');
-        }
-      });
+    this.consulta = pedirPagina(0).pipe(
+      expand((fotos, pagina) => fotos.length === this.cantidadPorPagina
+        ? pedirPagina(pagina + 1)
+        : EMPTY
+      ),
+      reduce((todas, pagina) => todas.concat(pagina), [] as LuzFotoItemDto[])
+    ).subscribe({
+      next: fotos => {
+        this.fotos.set(fotos);
+        this.cargando.set(false);
+      },
+      error: () => {
+        this.cargando.set(false);
+        this.error.set('No se pudo consultar el historial.');
+      }
+    });
   }
 
   verFoto(id: string): void {
