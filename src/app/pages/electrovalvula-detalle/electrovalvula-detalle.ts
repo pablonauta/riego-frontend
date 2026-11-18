@@ -141,7 +141,14 @@ export class ElectrovalvulaDetalle {
   ): void {
     evento.preventDefault();
 
-    if (!this.puedeOperar || this.guardandoRiego()) {
+    if (!this.puedeOperar) {
+  this.errorRiego.set(
+    'Tu cuenta es de solo lectura. Solo administradores y operadores pueden programar riegos.',
+      );
+      return;
+    }
+
+    if (this.guardandoRiego()) {
       return;
     }
 
@@ -184,8 +191,8 @@ export class ElectrovalvulaDetalle {
   }
 
     cargarProgramados(): void {
-    if (!this.puedeOperar || this.cargandoProgramados()) {
-      return;
+     if (this.cargandoProgramados()) {
+     return;
     }
 
     this.cargandoProgramados.set(true);

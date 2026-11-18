@@ -30,7 +30,7 @@
   }
 </section>
 
-@if (puedeOperar) {
+
   <section class="seccion-valvula" aria-labelledby="titulo-programados">
     <h2 id="titulo-programados">Riegos programados</h2>
 
@@ -62,9 +62,12 @@
         </label>
       </div>
 
-      <button type="submit" [disabled]="guardandoRiego() || cargandoProgramados()">
+     <button
+        type="submit"
+        [attr.formnovalidate]="puedeOperar ? null : ''"
+        [disabled]="puedeOperar && (guardandoRiego() || cargandoProgramados())">
         {{ guardandoRiego() ? 'Guardando…' : 'Programar riego' }}
-      </button>
+    </button>
     </form>
 
     @if (mensajeRiego()) {
@@ -129,7 +132,7 @@
       </table>
     }
   </section>
-}
+
 
 <div class="filtros-historial" role="group" aria-label="Filtrar por resultado">
   <button type="button" (click)="cambiarFiltro()"
