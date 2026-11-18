@@ -23,6 +23,11 @@
     <a *ngIf="puedeVerElectrovalvulas" routerLink="/dashboard/electrovalvulas">
       Electroválvulas
     </a>
+    <button type="button" class="selector-tema"
+      [attr.aria-pressed]="tema.tema() === 'oscuro'"
+      (click)="tema.alternar()">
+      Modo oscuro
+    </button>
   </nav>
 
   <!-- Rutas hijas -->

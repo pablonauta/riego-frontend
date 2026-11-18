@@ -22,29 +22,29 @@ li {
   align-items: baseline;
   gap: 0.25rem 0.5rem;
   padding: 0.9rem 1rem;
-  border: 1px solid #d6e2d9;
+  border: 1px solid light-dark(#d6e2d9, #52755d);
   border-radius: 0.6rem;
-  background: #f5f9f6;
-  color: #19382a;
+  background: light-dark(#f5f9f6, #26382d);
+  color: light-dark(#19382a, #e6eee7);
 }
 
 li span {
-  color: #425d4d;
+  color: light-dark(#425d4d, #b5c9ba);
   font-size: 0.9rem;
 }
 
 p {
   padding: 0.85rem 1rem;
-  border: 1px solid #d6e2d9;
+  border: 1px solid light-dark(#d6e2d9, #52755d);
   border-radius: 0.6rem;
-  background: #f5f9f6;
-  color: #425d4d;
+  background: light-dark(#f5f9f6, #26382d);
+  color: light-dark(#425d4d, #b5c9ba);
 }
 
 p[role='alert'] {
-  border-color: #edc7c2;
-  background: #fff4f2;
-  color: #8a2922;
+  border-color: light-dark(#edc7c2, #9e5252);
+  background: light-dark(#fff4f2, #432a2a);
+  color: light-dark(#8a2922, #ffb4b4);
 }
 
 .electrovalvula-enlace,

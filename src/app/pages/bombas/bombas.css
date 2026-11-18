@@ -9,5 +9,5 @@ h2 {
 }
 
 .error {
-  color: #b00020;
+  color: light-dark(#b00020, #ffb4b4);
 }

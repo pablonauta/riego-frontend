@@ -169,7 +169,7 @@
     gap: .65rem .75rem;
     margin-bottom: .65rem;
     padding: .75rem;
-    border: 1px solid #b7d8bc;
+    border: 1px solid var(--verde-borde);
     border-radius: .65rem;
   }
 

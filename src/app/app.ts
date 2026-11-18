@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TemaService } from './services/tema';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,8 @@ import { RouterOutlet } from '@angular/router';
     <router-outlet></router-outlet>
   `
 })
-export class App {}
+export class App {
+  constructor() {
+    inject(TemaService);
+  }
+}

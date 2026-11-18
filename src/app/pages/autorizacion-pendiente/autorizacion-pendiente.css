@@ -5,21 +5,21 @@
   justify-content: center;
   align-items: center;
   padding: 24px;
-  background: #f4f7f3;
+  background: light-dark(#f4f7f3, #111a15);
 }
 
 .panel {
   width: 100%;
   max-width: 520px;
   padding: 36px;
-  background: white;
-  border: 1px solid #dce5da;
+  background: var(--color-surface);
+  border: 1px solid light-dark(#dce5da, #52755d);
   border-radius: 12px;
   text-align: center;
 }
 
 h1 {
-  color: #327044;
+  color: light-dark(#327044, #a5e2b3);
 }
 
 h2 {
@@ -32,7 +32,7 @@ p {
 }
 
 .email {
-  color: #666;
+  color: light-dark(#666, #b5c9ba);
   font-size: 0.9rem;
 }
 
@@ -63,5 +63,5 @@ button.salir {
 }
 
 .error {
-  color: #b42318;
+  color: light-dark(#b42318, #ffb4b4);
 }

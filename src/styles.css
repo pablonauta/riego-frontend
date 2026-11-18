@@ -9,6 +9,23 @@
   --blanco: #ffffff;
   --gris-texto: #2f2f2f;
   --rojo-error: #c62828;
+  --fondo-final: #f7fff8;
+  --texto-boton: #fff;
+  --verde-borde: #b7d8bc;
+  color-scheme: light;
+}
+
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --verde-principal: #2c6846;
+  --verde-claro: #377953;
+  --verde-suave: #243a2e;
+  --verde-oscuro: #a5e2b3;
+  --blanco: #1c2821;
+  --gris-texto: #e6eee7;
+  --rojo-error: #ffaaaa;
+  --fondo-final: #111a15;
+  --verde-borde: #52755d;
 }
 
 /* ===============================
@@ -18,7 +35,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", "Inter", system-ui, sans-serif;
-  background: linear-gradient(to bottom, var(--verde-suave), #f7fff8);
+  background: linear-gradient(to bottom, var(--verde-suave), var(--fondo-final));
   color: var(--gris-texto);
   min-height: 100vh;
 }
@@ -88,15 +105,15 @@ h1, h2 {
 }
 
 .alert-success {
-  background: #e6f7e7;
+  background: light-dark(#e6f7e7, #253f2e);
   border: 1px solid var(--verde-claro);
   color: var(--verde-oscuro);
 }
 
 .alert-error {
-  background: #ffdede;
-  border: 1px solid #ff8c8c;
-  color: #7a0000;
+  background: light-dark(#ffdede, #432a2a);
+  border: 1px solid light-dark(#ff8c8c, #9e5252);
+  color: light-dark(#7a0000, #ffb4b4);
 }
 
 /* ===============================
@@ -152,12 +169,12 @@ h1, h2 {
 .form-field input.is-invalid,
 input.ng-invalid.ng-touched {
   border-color: var(--rojo-error);
-  background-color: #fdeeee;
+  background-color: light-dark(#fdeeee, #432a2a);
 }
 
 /* texto chiquito de error debajo del campo */
 .field-error {
-  color: #b00020;
+  color: light-dark(#b00020, #ffb4b4);
   font-size: 0.85rem;
   margin-top: 0.35rem;
 }
@@ -198,7 +215,7 @@ button:disabled {
   margin-top: 1rem;
   padding: 0.85rem;
   border-radius: 10px;
-  background-color: #e6f7ed;
+  background-color: light-dark(#e6f7ed, #253f2e);
   color: var(--verde-oscuro);
   font-weight: 700;
   text-align: center;
@@ -209,7 +226,7 @@ button:disabled {
   margin-top: 1rem;
   padding: 0.85rem;
   border-radius: 10px;
-  background-color: #fdeeee;
+  background-color: light-dark(#fdeeee, #432a2a);
   color: var(--rojo-error);
   font-weight: 700;
   text-align: center;
@@ -225,7 +242,7 @@ button:disabled {
 
 .register-links a,
 .login-links a {
-  color: var(--verde-principal);
+  color: light-dark(var(--verde-principal), var(--verde-oscuro));
   font-weight: 700;
   text-decoration: none;
 }
@@ -275,7 +292,7 @@ button:disabled {
   --color-primary-light: var(--verde-claro);
   --color-primary-dark: var(--verde-oscuro);
   --color-text: var(--gris-texto);
-  --color-text-light: var(--blanco);
+  --color-text-light: var(--texto-boton);
   --color-surface: var(--blanco);
 }
 
@@ -300,6 +317,26 @@ button:disabled {
 /* botón con tu gradiente (más lindo) */
 button {
   background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
-  color: var(--blanco);
+  color: var(--texto-boton);
   border-radius: 12px;
+}
+
+:root[data-tema="oscuro"] a:not([class]) {
+  color: #a5e2b3;
+}
+
+:root[data-tema="oscuro"] app-luz-monitor .grafica .serie {
+  stroke: #b5d8a6;
+}
+
+:root[data-tema="oscuro"] app-luz-monitor .grafica .serie.diaria {
+  stroke: #bde7ce;
+}
+
+:root[data-tema="oscuro"] app-luz-monitor .grafica .serie.semanal {
+  stroke: #6ab68e;
+}
+
+:root[data-tema="oscuro"] app-luz-monitor .grafica .punto {
+  fill: #bde7ce;
 }

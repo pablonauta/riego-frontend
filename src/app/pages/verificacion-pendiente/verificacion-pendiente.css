@@ -12,7 +12,7 @@
 .card {
   width: 100%;
   max-width: 560px;
-  background: #fff;
+  background: var(--color-surface);
   border: 2px solid #2e7d32;
   border-radius: 14px;
   padding: 24px;
@@ -22,13 +22,13 @@
 .card h1 {
   margin: 0 0 10px;
   text-align: center;
-  color: #2e7d32;
+  color: light-dark(#2e7d32, #a5e2b3);
   font-size: 34px;
 }
 
 .card p {
   margin: 0 0 14px;
-  color: #222;
+  color: light-dark(#222, #e6eee7);
   text-align: center;
 }
 
@@ -70,22 +70,22 @@
 }
 
 .ok {
-  background: #e8f5e9;
+  background: light-dark(#e8f5e9, #243a2e);
   border-left: 4px solid #2e7d32;
-  color: #1b5e20;
+  color: var(--verde-oscuro);
 }
 
 .err {
-  background: #ffebee;
+  background: light-dark(#ffebee, #432a2a);
   border-left: 4px solid #c62828;
-  color: #b71c1c;
+  color: light-dark(#b71c1c, #ffb4b4);
 }
 
 .card a {
   display: block;
   text-align: center;
   margin-top: 16px;
-  color: #2e7d32;
+  color: light-dark(#2e7d32, #a5e2b3);
   font-weight: 700;
   text-decoration: none;
 }

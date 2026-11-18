@@ -5,6 +5,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 
 
 import { AuthService } from '../../services/auth.service';
+import { TemaService } from '../../services/tema';
 import { LogoutComponent } from '../../components/logout/logout';
 
 @Component({
@@ -22,6 +23,7 @@ import { LogoutComponent } from '../../components/logout/logout';
 export class Dashboard {
 
   private authService = inject(AuthService);
+  readonly tema = inject(TemaService);
 
   get email(): string {
     return this.authService.getUsuarioActual()?.name ?? '';

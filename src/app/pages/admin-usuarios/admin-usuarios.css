@@ -29,21 +29,21 @@ button {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--color-surface);
 }
 
 th, td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid light-dark(#ddd, #52755d);
 }
 
 th {
-  background: #edf3ed;
+  background: light-dark(#edf3ed, #243a2e);
 }
 
 .error {
-  color: #b42318;
+  color: light-dark(#b42318, #ffb4b4);
 }
 
 

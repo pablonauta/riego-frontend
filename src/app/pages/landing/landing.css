@@ -39,13 +39,13 @@
 
 /* SECCIÓN DE FEATURES */
 .features h2 {
-  color: var(--color-primary);
+  color: light-dark(var(--color-primary), var(--verde-oscuro));
   margin-bottom: 1.5rem;
 }
 
 /* CARDS */
 .feature-card {
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-primary-light);
   border-radius: 10px;
   padding: 1rem;

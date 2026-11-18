@@ -37,14 +37,14 @@ h1 {
 }
 
 .alert-success {
-  background: #e6f7e7;
+  background: light-dark(#e6f7e7, #253f2e);
   border: 1px solid var(--color-primary-light);
   color: var(--color-primary-dark);
 }
 
 .alert-error {
-  background: #ffd7d7;
-  border: 1px solid #ff8c8c;
+  background: light-dark(#ffd7d7, #432a2a);
+  border: 1px solid light-dark(#ff8c8c, #9e5252);
   color: #7a0000;
 }
 
@@ -107,7 +107,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background: var(--color-primary-dark);
+  background: light-dark(var(--color-primary-dark), #245638);
 }
 
 button:disabled {
@@ -122,7 +122,7 @@ button:disabled {
 }
 
 .register-links a {
-  color: var(--color-primary);
+  color: light-dark(var(--color-primary), var(--verde-oscuro));
   font-weight: 600;
   text-decoration: none;
 }
@@ -138,7 +138,7 @@ input.ng-invalid.ng-touched {
 
 /* texto chiquito de error debajo del campo */
 .field-error {
-  color: #b00020;
+  color: light-dark(#b00020, #ffb4b4);
   font-size: 0.8rem;
   margin-top: 0.25rem;
 }

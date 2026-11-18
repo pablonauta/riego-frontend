@@ -24,7 +24,7 @@
 .placeholder {
   margin-top: 2rem;
   padding: 1.2rem;
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-primary-light);
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
@@ -32,7 +32,7 @@
 
 .placeholder h2 {
   margin-top: 0;
-  color: var(--color-primary);
+  color: light-dark(var(--color-primary), var(--verde-oscuro));
 }
 
 .placeholder p {
@@ -101,5 +101,28 @@
 
 .dashboard-nav a:focus-visible {
   outline: 3px solid #86b995;
+  outline-offset: 3px;
+}
+
+.dashboard-nav .selector-tema {
+  width: auto;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--verde-borde);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--verde-oscuro);
+  font: inherit;
+  font-weight: 600;
+}
+
+.dashboard-nav .selector-tema:hover,
+.dashboard-nav .selector-tema[aria-pressed="true"] {
+  background: var(--verde-suave);
+}
+
+.dashboard-nav .selector-tema:focus-visible {
+  outline: 2px solid var(--verde-oscuro);
   outline-offset: 3px;
 }
