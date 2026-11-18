@@ -84,15 +84,41 @@ export class LuzMonitor {
       return { indice, etiqueta, x: this.xParaDia(indice, diasTranscurridos) };
     });
 
-    const trazado = indices.flatMap((indice, posicion) => {
-      const x = this.xParaDia(indice, diasTranscurridos);
-      const y = this.yParaHoras(puntos.get(indice)!);
-      const punto = `${x.toFixed(2)},${y.toFixed(2)}`;
-      // Al separar los tramos quedan visibles los días sin datos, incluso con puntos aislados.
-      return posicion > 0 && indice - indices[posicion - 1] === 1 ? [`L${punto}`] : [`M${punto}`, `L${punto}`];
-    }).join(' ');
+    const tendencia = new Map<number, number>();
+    for (const indice of indices) {
+      const ventana: number[] = [];
+      for (let vecino = indice - 3; vecino <= indice + 3; vecino++) {
+        const horas = puntos.get(vecino);
+        if (horas !== undefined) ventana.push(horas);
+      }
+      if (ventana.length >= 4) {
+        ventana.sort((a, b) => a - b);
+        const centro = Math.floor(ventana.length / 2);
+        const mediana = ventana.length % 2 === 0
+          ? (ventana[centro - 1] + ventana[centro]) / 2
+          : ventana[centro];
+        tendencia.set(indice, mediana);
+      }
+    }
 
-    return { inicio, diasTranscurridos, puntos, marcas, trazado, ultimo };
+    const trazado = (serie: Map<number, number>) => {
+      const fechas = [...serie.keys()];
+      return fechas.flatMap((indice, posicion) => {
+        const x = this.xParaDia(indice, diasTranscurridos);
+        const y = this.yParaHoras(serie.get(indice)!);
+        const punto = `${x.toFixed(2)},${y.toFixed(2)}`;
+        return posicion > 0 && indice - fechas[posicion - 1] === 1
+          ? [`L${punto}`]
+          : [`M${punto}`, `L${punto}`];
+      }).join(' ');
+    };
+
+    return {
+      inicio, diasTranscurridos, puntos, marcas, tendencia,
+      trazadoDiario: trazado(new Map(indices.map(indice => [indice, puntos.get(indice)!]))),
+      trazadoSemanal: trazado(tendencia),
+      ultimo,
+    };
   });
 
   readonly lectura = computed(() => {
@@ -104,6 +130,7 @@ export class LuzMonitor {
     return {
       fecha: grafica.inicio + indice * DIA_MS,
       horas,
+      mediana: grafica.tendencia.get(indice),
       x: this.xParaDia(indice, grafica.diasTranscurridos),
     };
   });

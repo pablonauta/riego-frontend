@@ -2,7 +2,7 @@
   <div class="encabezado">
     <div>
       <h2 id="titulo-nivel-luz">Horas de luz por día</h2>
-      <p>Estimadas a partir de las mediciones de la Pixart.</p>
+      <p>Duración estimada de la franja de luz que detectó la Pixart.</p>
     </div>
 
     <form class="periodo" novalidate (submit)="consultar($event, inicio.value, fin.value)">
@@ -34,7 +34,10 @@
         <p class="resumen">
           @if (lectura(); as dato) {
             <strong>{{ formatoFecha.format(dato.fecha) }}</strong>
-            · {{ dato.horas === undefined ? 'Sin dato' : formatoHoras.format(dato.horas) + ' h' }}
+            · {{ dato.horas === undefined ? 'Sin estimación válida' : formatoHoras.format(dato.horas) + ' h ese día' }}
+            @if (dato.mediana !== undefined) {
+              · {{ formatoHoras.format(dato.mediana) }} h de mediana semanal
+            }
           }
         </p>
 
@@ -52,7 +55,8 @@
             <text [attr.x]="marca.x" [attr.y]="area.y + area.alto + 25"
               text-anchor="middle">{{ marca.etiqueta }}</text>
           }
-          <path class="serie" [attr.d]="datos.trazado" />
+          <path class="serie diaria" [attr.d]="datos.trazadoDiario" />
+          <path class="serie semanal" [attr.d]="datos.trazadoSemanal" />
           @if (lectura(); as dato) {
             @if (diaSeleccionado() !== null) {
               <line [attr.x1]="dato.x" [attr.x2]="dato.x" [attr.y1]="area.y"
@@ -64,9 +68,9 @@
           }
         </svg>
 
-        <p class="nota">Se cuenta un minuto por muestra válida que alcanza el umbral. Los días sin dato quedan en blanco.</p>
+        <p class="nota">Verde claro: estimación diaria. Verde oscuro: mediana de 7 días con al menos 4 días válidos. Los días sin transiciones claras quedan en blanco.</p>
       } @else {
-        <p role="status">No hay datos de horas de luz para este período.</p>
+        <p role="status">No se pudo estimar la duración de la luz en los días de este período.</p>
       }
     }
   }

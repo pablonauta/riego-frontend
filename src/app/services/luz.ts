@@ -30,7 +30,7 @@ export class LuzService {
 
     return from(tramos).pipe(
       concatMap(({ primerDia, ultimoDia }) =>
-        this.http.get<FotoperiodoDia[]>(`${environment.apiUrl}/luz/fotoperiodo`, {
+        this.http.get<FotoperiodoDia[]>(`${environment.apiUrl}/luz/fotoperiodo/franja`, {
           params: {
             instalacionId,
             // El margen evita cortar un día en los bordes si la API agrupa por otro offset.

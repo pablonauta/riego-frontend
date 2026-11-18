@@ -77,11 +77,19 @@
 
 .serie {
   fill: none;
-  stroke: #168454;
-  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+}
+
+.diaria {
+  stroke: #73a889;
+  stroke-width: 1.5;
+}
+
+.semanal {
+  stroke: #176344;
+  stroke-width: 2.5;
 }
 
 .punto {
