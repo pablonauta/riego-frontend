@@ -41,10 +41,14 @@
   } @else {
     <ul>
       @for (valvula of electrovalvulas(); track valvula.id) {
-        <li>
-          <a [routerLink]="[valvula.id]">{{ valvula.nombre }}</a>
-          <span> · {{ valvula.habilitada ? 'Habilitada' : 'Deshabilitada' }}</span>
-        </li>
+      <li>
+  <a class="electrovalvula-enlace" [routerLink]="[valvula.id]">
+    {{ valvula.nombre }}
+  </a>
+  <span class="electrovalvula-estado">
+    {{ valvula.habilitada ? 'Habilitada' : 'Deshabilitada' }}
+  </span>
+</li>
       }
     </ul>
   }

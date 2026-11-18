@@ -46,3 +46,29 @@ p[role='alert'] {
   background: #fff4f2;
   color: #8a2922;
 }
+
+.electrovalvula-enlace,
+.electrovalvula-enlace:visited {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 5px;
+  background-color: #2e6b45;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.electrovalvula-enlace:hover {
+  background-color: #245737;
+}
+
+.electrovalvula-enlace:focus-visible {
+  outline: 2px solid #245737;
+  outline-offset: 3px;
+}
+
+.electrovalvula-estado {
+  margin-inline-start: 12px;
+}
