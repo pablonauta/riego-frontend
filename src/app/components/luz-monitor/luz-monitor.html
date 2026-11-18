@@ -1,46 +1,72 @@
 <section class="luz-monitor" aria-labelledby="titulo-nivel-luz">
   <div class="encabezado">
     <div>
-      <h2 id="titulo-nivel-luz">Nivel de luz</h2>
-      <p>Cámara Pixart · Índice relativo de 0 a 1000</p>
+      <h2 id="titulo-nivel-luz">Horas de luz por día</h2>
+      <p>Estimadas a partir de las mediciones de la Pixart.</p>
     </div>
-    <label class="fecha">
-      Fecha
-      <input #selector type="date" [value]="fecha()" [max]="hoy"
-        (change)="cambiarFecha(selector.value); selector.value = fecha()">
-    </label>
+
+    <form class="periodo" novalidate (submit)="consultar($event, inicio.value, fin.value)">
+      <label class="fecha">
+        Desde
+        <input #inicio type="date" [value]="desde" [max]="hoy" required>
+      </label>
+      <label class="fecha">
+        Hasta
+        <input #fin type="date" [value]="hasta" [max]="hoy" required>
+      </label>
+      <button type="submit">Ver gráfica</button>
+    </form>
   </div>
+
+  @if (errorPeriodo(); as error) {
+    <p role="alert">{{ error }}</p>
+  }
 
   @switch (estado().tipo) {
     @case ('cargando') {
       <p role="status">Cargando mediciones…</p>
     }
     @case ('error') {
-      <p role="alert">No se pudieron cargar las mediciones de luz.</p>
+      <p role="alert">No se pudieron cargar las horas de luz. Volvé a probar con «Ver gráfica».</p>
     }
     @case ('datos') {
       @if (grafica(); as datos) {
-        <dl class="resumen">
-          <div><dt>Última del día · {{ datos.horaUltima }}</dt><dd>{{ datos.ultima }}</dd></div>
-          <div><dt>Mínimo</dt><dd>{{ datos.minimo }}</dd></div>
-          <div><dt>Máximo</dt><dd>{{ datos.maximo }}</dd></div>
-        </dl>
-        <svg class="grafica" viewBox="0 0 810 260" role="img"
-          aria-label="Índice de luz de la Pixart a lo largo del día, en hora uruguaya">
+        <p class="resumen">
+          @if (lectura(); as dato) {
+            <strong>{{ formatoFecha.format(dato.fecha) }}</strong>
+            · {{ dato.horas === undefined ? 'Sin dato' : formatoHoras.format(dato.horas) + ' h' }}
+          }
+        </p>
+
+        <svg #grafico class="grafica" [attr.viewBox]="'0 0 ' + vista.ancho + ' ' + vista.alto"
+          role="img" aria-label="Horas de luz detectadas cada día dentro del período elegido"
+          (pointermove)="marcarDia($event, grafico)" (pointerdown)="marcarDia($event, grafico)"
+          (pointerleave)="diaSeleccionado.set(null)">
           @for (nivel of niveles; track nivel) {
             <line [attr.x1]="area.x" [attr.x2]="area.x + area.ancho"
-              [attr.y1]="yParaIndice(nivel)" [attr.y2]="yParaIndice(nivel)" />
-            <text [attr.x]="area.x - 10" [attr.y]="yParaIndice(nivel)"
-              text-anchor="end" dominant-baseline="middle">{{ nivel }}</text>
+              [attr.y1]="yParaHoras(nivel)" [attr.y2]="yParaHoras(nivel)" />
+            <text [attr.x]="area.x - 9" [attr.y]="yParaHoras(nivel)"
+              text-anchor="end" dominant-baseline="middle">{{ nivel }} h</text>
           }
-          @for (hora of horas; track hora) {
-            <text [attr.x]="xParaMinuto(hora * 60)" [attr.y]="area.y + area.alto + 25"
-              text-anchor="middle">{{ hora.toString().padStart(2, '0') }}:00</text>
+          @for (marca of datos.marcas; track marca.indice) {
+            <text [attr.x]="marca.x" [attr.y]="area.y + area.alto + 25"
+              text-anchor="middle">{{ marca.etiqueta }}</text>
           }
           <path class="serie" [attr.d]="datos.trazado" />
+          @if (lectura(); as dato) {
+            @if (diaSeleccionado() !== null) {
+              <line [attr.x1]="dato.x" [attr.x2]="dato.x" [attr.y1]="area.y"
+                [attr.y2]="area.y + area.alto" />
+            }
+            @if (dato.horas !== undefined) {
+              <circle class="punto" [attr.cx]="dato.x" [attr.cy]="yParaHoras(dato.horas)" r="4" />
+            }
+          }
         </svg>
+
+        <p class="nota">Se cuenta un minuto por muestra válida que alcanza el umbral. Los días sin dato quedan en blanco.</p>
       } @else {
-        <p role="status">No hay mediciones de luz para esta fecha.</p>
+        <p role="status">No hay datos de horas de luz para este período.</p>
       }
     }
   }

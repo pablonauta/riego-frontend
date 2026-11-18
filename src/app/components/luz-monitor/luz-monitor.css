@@ -34,27 +34,33 @@
   font: inherit;
 }
 
-.resumen {
+.periodo {
   display: flex;
+  align-items: end;
   flex-wrap: wrap;
-  gap: 8px 24px;
+  gap: 8px;
+}
+
+.periodo button {
+  padding: 6px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.resumen {
   margin: 20px 0 12px;
-}
-
-.resumen dt {
-  font-size: 0.8rem;
-}
-
-.resumen dd {
-  margin: 2px 0 0;
-  font-size: 1.2rem;
-  font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+
+.nota {
+  margin: 6px 0 0;
+  font-size: 0.875rem;
 }
 
 .grafica {
   display: block;
   width: 100%;
+  cursor: crosshair;
 }
 
 .grafica line {
@@ -76,6 +82,10 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+}
+
+.punto {
+  fill: #168454;
 }
 
 @media (max-width: 600px) {

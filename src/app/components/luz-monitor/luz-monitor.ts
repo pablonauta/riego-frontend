@@ -1,102 +1,143 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
-import { LuzService, PuntoLuzDia } from '../../services/luz';
+import { DIA_MS, FotoperiodoDia, LuzService } from '../../services/luz';
 
-const zonaHoraria = 'America/Montevideo';
-const formatoFecha = new Intl.DateTimeFormat('sv-SE', { timeZone: zonaHoraria });
-const formatoHora = new Intl.DateTimeFormat('es-UY', {
-  timeZone: zonaHoraria,
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hourCycle: 'h23'
+const calendarioLocal = new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Montevideo' });
+const formatoFecha = new Intl.DateTimeFormat('es-UY', {
+  day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC',
 });
-const minutosPorDia = 24 * 60;
-const intervaloMaximoMs = 3 * 60 * 1000;
-const indiceMaximo = 1000;
+const formatoEje = new Intl.DateTimeFormat('es-UY', {
+  day: '2-digit', month: '2-digit', timeZone: 'UTC',
+});
+const formatoHoras = new Intl.NumberFormat('es-UY', { maximumFractionDigits: 2 });
 
-type EstadoLuz =
+type Periodo = { desde: string; hasta: string };
+type Estado =
   | { tipo: 'cargando' | 'error' }
-  | { tipo: 'datos'; muestras: PuntoLuzDia[] };
+  | { tipo: 'datos'; periodo: Periodo; dias: FotoperiodoDia[] };
+
+function diaIso(instante: number): string {
+  return new Date(instante).toISOString().slice(0, 10);
+}
 
 @Component({
   selector: 'app-luz-monitor',
   templateUrl: './luz-monitor.html',
-  styleUrl: './luz-monitor.css'
+  styleUrl: './luz-monitor.css',
 })
 export class LuzMonitor {
   private readonly luz = inject(LuzService);
-
   readonly instalacionId = input.required<number>();
-  readonly hoy = formatoFecha.format(new Date());
-  readonly fecha = signal(this.hoy);
-  readonly area = { x: 58, y: 16, ancho: 720, alto: 210 };
-  readonly horas = [0, 6, 12, 18, 24];
-  readonly niveles = [0, 250, 500, 750, 1000];
+  readonly hoy = calendarioLocal.format(new Date());
+  readonly desde = diaIso(Date.parse(this.hoy) - 30 * DIA_MS);
+  readonly hasta = diaIso(Date.parse(this.hoy) - DIA_MS);
+  readonly errorPeriodo = signal('');
+  readonly diaSeleccionado = signal<number | null>(null);
+  readonly vista = { ancho: 820, alto: 265 };
+  readonly area = { x: 58, y: 16, ancho: 702, alto: 210 };
+  readonly niveles = [0, 6, 12, 18, 24];
+  readonly formatoFecha = formatoFecha;
+  readonly formatoHoras = formatoHoras;
 
+  private readonly periodo = signal<Periodo>({ desde: this.desde, hasta: this.hasta });
   private readonly consulta = computed(() => ({
     instalacionId: this.instalacionId(),
-    fecha: this.fecha()
+    periodo: this.periodo(),
   }));
 
   readonly estado = toSignal(
     toObservable(this.consulta).pipe(
-      switchMap(({ instalacionId, fecha }) => this.luz.getDia(instalacionId, fecha).pipe(
-        map((muestras): EstadoLuz => ({ tipo: 'datos', muestras })),
-        catchError(() => of<EstadoLuz>({ tipo: 'error' })),
-        startWith<EstadoLuz>({ tipo: 'cargando' })
-      ))
+      switchMap(({ instalacionId, periodo }) =>
+        this.luz.getFotoperiodo(instalacionId, periodo.desde, periodo.hasta).pipe(
+          map((dias): Estado => ({ tipo: 'datos', periodo, dias })),
+          catchError(() => of<Estado>({ tipo: 'error' })),
+          startWith<Estado>({ tipo: 'cargando' }),
+        ),
+      ),
     ),
-    { initialValue: { tipo: 'cargando' } as EstadoLuz }
+    { initialValue: { tipo: 'cargando' } as Estado },
   );
 
   readonly grafica = computed(() => {
     const estado = this.estado();
     if (estado.tipo !== 'datos') return null;
 
-    const puntos = estado.muestras
-      .map(({ ts, indice }) => ({ instante: Date.parse(ts), indice }))
-      .filter(({ instante, indice }) =>
-        Number.isFinite(instante) && Number.isFinite(indice) &&
-        indice >= 0 && indice <= indiceMaximo
-      )
-      .sort((a, b) => a.instante - b.instante);
+    const inicio = Date.parse(estado.periodo.desde);
+    const diasTranscurridos = (Date.parse(estado.periodo.hasta) - inicio) / DIA_MS;
+    const puntos = new Map<number, number>();
 
-    const ultima = puntos.at(-1);
-    if (!ultima) return null;
+    for (const { dia, horasDeLuz } of estado.dias) {
+      if (Number.isFinite(horasDeLuz) && horasDeLuz >= 0 && horasDeLuz <= 24) {
+        puntos.set((Date.parse(dia) - inicio) / DIA_MS, horasDeLuz);
+      }
+    }
 
-    const comandos = puntos.flatMap(({ instante, indice }, i) => {
-      const [hora, minuto, segundo] = formatoHora.format(instante).split(':').map(Number);
-      const x = this.xParaMinuto(hora * 60 + minuto + segundo / 60);
-      const y = this.yParaIndice(indice);
-      const punto = `${x.toFixed(2)},${y.toFixed(2)}`;
-      const anterior = puntos[i - 1];
+    const indices = [...puntos.keys()].sort((a, b) => a - b);
+    const ultimo = indices.at(-1);
+    if (ultimo === undefined) return null;
 
-      // Cada tramo arranca con un punto visible, aunque tenga una sola muestra.
-      return !anterior || instante - anterior.instante > intervaloMaximoMs
-        ? [`M${punto}`, `L${punto}`]
-        : [`L${punto}`];
+    const intervalos = Math.min(diasTranscurridos, 4);
+    const marcas = Array.from({ length: intervalos + 1 }, (_, posicion) => {
+      const indice = intervalos ? Math.round(posicion * diasTranscurridos / intervalos) : 0;
+      const etiqueta = formatoEje.format(inicio + indice * DIA_MS);
+      return { indice, etiqueta, x: this.xParaDia(indice, diasTranscurridos) };
     });
 
+    const trazado = indices.flatMap((indice, posicion) => {
+      const x = this.xParaDia(indice, diasTranscurridos);
+      const y = this.yParaHoras(puntos.get(indice)!);
+      const punto = `${x.toFixed(2)},${y.toFixed(2)}`;
+      // Al separar los tramos quedan visibles los días sin datos, incluso con puntos aislados.
+      return posicion > 0 && indice - indices[posicion - 1] === 1 ? [`L${punto}`] : [`M${punto}`, `L${punto}`];
+    }).join(' ');
+
+    return { inicio, diasTranscurridos, puntos, marcas, trazado, ultimo };
+  });
+
+  readonly lectura = computed(() => {
+    const grafica = this.grafica();
+    if (!grafica) return null;
+
+    const indice = this.diaSeleccionado() ?? grafica.ultimo;
+    const horas = grafica.puntos.get(indice);
     return {
-      trazado: comandos.join(' '),
-      ultima: ultima.indice,
-      horaUltima: formatoHora.format(ultima.instante).slice(0, 5),
-      minimo: Math.min(...puntos.map(p => p.indice)),
-      maximo: Math.max(...puntos.map(p => p.indice))
+      fecha: grafica.inicio + indice * DIA_MS,
+      horas,
+      x: this.xParaDia(indice, grafica.diasTranscurridos),
     };
   });
 
-  xParaMinuto(minuto: number): number {
-    return this.area.x + minuto / minutosPorDia * this.area.ancho;
+  consultar(evento: SubmitEvent, desde: string, hasta: string): void {
+    evento.preventDefault();
+
+    if (!desde || !hasta || desde > hasta || hasta > this.hoy) {
+      this.errorPeriodo.set('Elegí fechas válidas, con Desde anterior o igual a Hasta.');
+      return;
+    }
+
+    this.errorPeriodo.set('');
+    this.diaSeleccionado.set(null);
+    this.periodo.set({ desde, hasta });
   }
 
-  yParaIndice(indice: number): number {
-    return this.area.y + (1 - indice / indiceMaximo) * this.area.alto;
+  marcarDia(evento: PointerEvent, svg: Element): void {
+    const grafica = this.grafica();
+    if (!grafica) return;
+
+    const rectangulo = svg.getBoundingClientRect();
+    const x = (evento.clientX - rectangulo.left) * this.vista.ancho / rectangulo.width;
+    const proporcion = (x - this.area.x) / this.area.ancho;
+    this.diaSeleccionado.set(proporcion >= 0 && proporcion <= 1
+      ? Math.round(proporcion * grafica.diasTranscurridos)
+      : null);
   }
 
-  cambiarFecha(fecha: string): void {
-    if (fecha && fecha <= this.hoy) this.fecha.set(fecha);
+  xParaDia(indice: number, diasTranscurridos: number): number {
+    return this.area.x + this.area.ancho * (diasTranscurridos ? indice / diasTranscurridos : 0.5);
+  }
+
+  yParaHoras(horas: number): number {
+    return this.area.y + this.area.alto * (1 - horas / 24);
   }
 }
