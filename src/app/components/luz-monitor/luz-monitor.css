@@ -1,0 +1,85 @@
+.luz-monitor {
+  margin-top: 24px;
+  padding: clamp(12px, 3vw, 24px);
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 12px;
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.encabezado h2,
+.encabezado p {
+  margin: 0;
+}
+
+.encabezado p {
+  margin-top: 4px;
+  font-size: 0.875rem;
+}
+
+.fecha {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  font-size: 0.875rem;
+}
+
+.fecha input {
+  padding: 5px 8px;
+  font: inherit;
+}
+
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 20px 0 12px;
+}
+
+.resumen dt {
+  font-size: 0.8rem;
+}
+
+.resumen dd {
+  margin: 2px 0 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.grafica {
+  display: block;
+  width: 100%;
+}
+
+.grafica line {
+  stroke: currentColor;
+  stroke-opacity: 0.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.grafica text {
+  fill: currentColor;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.serie {
+  fill: none;
+  stroke: #168454;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 600px) {
+  .grafica text {
+    font-size: 24px;
+  }
+}

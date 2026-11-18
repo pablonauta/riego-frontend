@@ -1,0 +1,47 @@
+<section class="luz-monitor" aria-labelledby="titulo-nivel-luz">
+  <div class="encabezado">
+    <div>
+      <h2 id="titulo-nivel-luz">Nivel de luz</h2>
+      <p>Cámara Pixart · Índice relativo de 0 a 1000</p>
+    </div>
+    <label class="fecha">
+      Fecha
+      <input #selector type="date" [value]="fecha()" [max]="hoy"
+        (change)="cambiarFecha(selector.value); selector.value = fecha()">
+    </label>
+  </div>
+
+  @switch (estado().tipo) {
+    @case ('cargando') {
+      <p role="status">Cargando mediciones…</p>
+    }
+    @case ('error') {
+      <p role="alert">No se pudieron cargar las mediciones de luz.</p>
+    }
+    @case ('datos') {
+      @if (grafica(); as datos) {
+        <dl class="resumen">
+          <div><dt>Última del día · {{ datos.horaUltima }}</dt><dd>{{ datos.ultima }}</dd></div>
+          <div><dt>Mínimo</dt><dd>{{ datos.minimo }}</dd></div>
+          <div><dt>Máximo</dt><dd>{{ datos.maximo }}</dd></div>
+        </dl>
+        <svg class="grafica" viewBox="0 0 810 260" role="img"
+          aria-label="Índice de luz de la Pixart a lo largo del día, en hora uruguaya">
+          @for (nivel of niveles; track nivel) {
+            <line [attr.x1]="area.x" [attr.x2]="area.x + area.ancho"
+              [attr.y1]="yParaIndice(nivel)" [attr.y2]="yParaIndice(nivel)" />
+            <text [attr.x]="area.x - 10" [attr.y]="yParaIndice(nivel)"
+              text-anchor="end" dominant-baseline="middle">{{ nivel }}</text>
+          }
+          @for (hora of horas; track hora) {
+            <text [attr.x]="xParaMinuto(hora * 60)" [attr.y]="area.y + area.alto + 25"
+              text-anchor="middle">{{ hora.toString().padStart(2, '0') }}:00</text>
+          }
+          <path class="serie" [attr.d]="datos.trazado" />
+        </svg>
+      } @else {
+        <p role="status">No hay mediciones de luz para esta fecha.</p>
+      }
+    }
+  }
+</section>
